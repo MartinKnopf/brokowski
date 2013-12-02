@@ -1,5 +1,6 @@
 # RESTful pub/sub server
 This is a Node.js based RESTful publish/subscribe eventbus.
+[![Build Status](https://secure.travis-ci.org/horsed/repusu.png)](http://travis-ci.org/horsed/repusu)
 
 ## Installation
 1. Download this repo as a zip or clone it.
