@@ -1,4 +1,6 @@
-# RESTful pub/sub server
+RESTful pub/sub server
+===========
+
 This is a lightweight Node.js based RESTful publish/subscribe eventbus.
 
 [![Build Status](https://secure.travis-ci.org/Horsed/repusu.png)](http://travis-ci.org/Horsed/repusu)
@@ -23,8 +25,3 @@ Given the server runs at ```http://localhost:3000```:
 ## TODO
 * hardening
 * automatic clean up
-
-## LICENSE
-Copyright 2013 Martin Knopf
-
-Licensed under the MIT License
