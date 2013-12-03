@@ -1,7 +1,9 @@
 # RESTful pub/sub server
-This is a Node.js based RESTful publish/subscribe eventbus.
+This is a lightweight Node.js based RESTful publish/subscribe eventbus.
 
 [![Build Status](https://secure.travis-ci.org/Horsed/repusu.png)](http://travis-ci.org/Horsed/repusu)
+
+A subscriber tells the eventbus which event it wants to subscribe to and which REST method the eventbus should call when that event is triggerd.
 
 ## Installation
 1. Download this repo as a zip or clone it.
@@ -20,6 +22,7 @@ Given the server runs at ```http://localhost:3000```:
 
 ## TODO
 * hardening
+* automatic clean up
 
 ## LICENSE
 Copyright 2013 Martin Knopf
