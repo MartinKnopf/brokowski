@@ -1,5 +1,5 @@
 var express = require('express')
-  , routes = require('./routes/pubsub')
+  , routes = require('./routes/pubsub')(require('request'))
   , monitoring = require('./routes/monitoring')
   , http = require('http')
   , path = require('path');
@@ -20,7 +20,7 @@ app.configure('development', function(){
 });
 
 app.post('/publish/:event', routes.publish);
-app.post('/subscribe/:event', routes.suscribe);
+app.post('/subscribe/:event', routes.subscribe);
 app.get('/monitoring/:check', monitoring.check);
 
 module.exports = http.createServer(app).listen(app.get('port'), function() {
