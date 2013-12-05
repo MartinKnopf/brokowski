@@ -3,7 +3,7 @@ brokowski
 
 Node.js based RESTful publish/subscribe broker.
 
-[![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski) v 0.0.1
+[![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski) v 0.0.3
 
 A subscriber tells the eventbus which event it wants to subscribe to and which REST method the eventbus should call when that event is triggerd.
 
