@@ -13,14 +13,19 @@ A subscriber tells the eventbus which event it wants to subscribe to and which R
 3. start via ```node app.js```
 
 ## Dependencies
-Node.js v 0.10
+Node.js ~0.10
 
-## API
+## REST API
 Given the server runs at ```http://localhost:3000```:
 
-* **subscribe**: POST ```{subscriber: 'http://localhost:12345/event'}``` to ```http://localhost:3000/subscribe/:event```
-* **publish**: POST any JSON to ```http://localhost:3000/publish/:event```
-* **monitoring**: GET ```http:localhost:3000/monitoring/alive``` returns ```200```
+### subscribe
+POST ```{subscriber: "http://localhost:12345/event", method: "POST"}``` to ```http://localhost:3000/subscribe/:event```
+
+### publish
+POST any JSON to ```http://localhost:3000/publish/:event```
+
+### monitoring
+GET ```http:localhost:3000/monitoring/alive``` returns ```200```
 
 ## TODO
 * hardening
