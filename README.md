@@ -1,9 +1,9 @@
 RESTful pub/sub server
 ===========
 
-This is a lightweight Node.js based RESTful publish/subscribe eventbus.
+Lightweight Node.js based RESTful publish/subscribe broker.
 
-[![Build Status](https://secure.travis-ci.org/Horsed/repusu.png)](http://travis-ci.org/Horsed/repusu)
+[![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski)
 
 A subscriber tells the eventbus which event it wants to subscribe to and which REST method the eventbus should call when that event is triggerd.
 
