@@ -1,6 +1,5 @@
 var assert = require('assert')
   , should = require('should')
-  , http = require('http')
   , pubsub
   , request;
 
@@ -93,6 +92,19 @@ describe('PubSub', function() {
 
       subscribe('event', 'brok3n url', 'POST');
       subscribe('event', 'http://localhost/goodurl', 'POST');
+
+      pubsub.publish({
+        params: {
+          event: 'event'
+        },
+        body: {}
+      }, {
+        send: function(statusCode) { statusCode.should.equal(200); done(); }
+      });
+    });
+
+    it('should skip subscriber when method invalid', function(done) {
+      subscribe('event', 'http://localhost/goodurl', 'INVALID_HTTP_METHOD');
 
       pubsub.publish({
         params: {

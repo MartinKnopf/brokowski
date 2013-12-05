@@ -1,8 +1,7 @@
 var assert = require('assert')
   , should = require('should')
-  , http = require('http')
   , pubsub
-  , request;
+  , request = require('request');
 
 describe('PubSub', function() {
 
@@ -33,6 +32,33 @@ describe('PubSub', function() {
         },
         body: {
           method: 'POST'
+        }
+      }, {
+        send: function(statusCode) { statusCode.should.equal(405); done(); }
+      });
+    });
+
+    it('should return 405 when subscriber\'s method is missing', function(done) {
+      pubsub.subscribe({
+        params: {
+          event: 'event'
+        },
+        body: {
+          subscriber: 'http://localhost:3000/eventomat'
+        }
+      }, {
+        send: function(statusCode) { statusCode.should.equal(405); done(); }
+      });
+    });
+
+    it('should return 405 when subscriber\'s method is invalid', function(done) {
+      pubsub.subscribe({
+        params: {
+          event: 'event'
+        },
+        body: {
+          subscriber: 'http://localhost:3000/eventomat',
+          method: 'INVALID_HTTP_METHOD'
         }
       }, {
         send: function(statusCode) { statusCode.should.equal(405); done(); }

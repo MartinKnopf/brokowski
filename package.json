@@ -1,11 +1,11 @@
 {
   "name": "brokowski",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "author": "Horsed",
   "description": "RESTful publish/subscribe broker",
   "private": false,
   "scripts": {
-    "start": "node app",
+    "start": "node brokowski",
     "test": "mocha"
   },
   "license": "MIT",

@@ -22,12 +22,11 @@ module.exports = function(req) {
     },
     subscribe: function(req, res) {
       var event = req.params['event']
-        , url = req.body.subscriber
-        , method = req.body.method;
+        , sub = {subscriber: req.body.subscriber, method: req.body.method};
 
-      if(url) {
-        if(subscriptions[event]) subscriptions[event].push({subscriber: url, method: method});
-        else subscriptions[event] = [{subscriber: url, method: method}];
+      if(sub.subscriber && sub.method && isValidHttpMethod(sub.method)) {
+        if(subscriptions[event]) subscriptions[event].push(sub);
+        else subscriptions[event] = [sub];
         res.send(200);
       } else {
         res.send(405);
@@ -35,3 +34,8 @@ module.exports = function(req) {
     }    
   }
 };
+
+function isValidHttpMethod(method) {
+  method = method.toLowerCase();
+  return request[method];
+}

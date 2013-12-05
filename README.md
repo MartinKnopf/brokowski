@@ -10,17 +10,16 @@ A subscriber tells the eventbus which event it wants to subscribe to and which R
 ## Installation
 Node.js >=0.10 is required
 
-1. run ```npm install brokowski```
-2. run ```npm install```
-3. start via ```node app.js```
+1. installing: ```npm install brokowski```
+2. running: ```node node_modules/brokowski/brokowski```
 
 ## REST API
-Given the server runs at ```http://localhost:3000```:
+Given the brokowski server runs at ```http://localhost:3000```:
 
 ### subscribe
 * method: POST
 * url: ```http://localhost:3000/subscribe/your-event```
-* json: ```{subscriber: "http://localhost:12345/your-event", method: "GET"}```
+* json: ```{subscriber: "http://localhost:12345/your-event", method: "GET" / "POST" / "PUT" / ...}```
 
 ### publish
 * method: POST
@@ -33,6 +32,5 @@ Given the server runs at ```http://localhost:3000```:
 * should return ```200```
 
 ## TODO
-* hardening
 * automatic clean up
-* publish to subscribers with the specified HTTP method
+* subscriber priority?
