@@ -8,12 +8,11 @@ Node.js based RESTful publish/subscribe broker.
 A subscriber tells the eventbus which event it wants to subscribe to and which REST method the eventbus should call when that event is triggerd.
 
 ## Installation
-1. Download this repo as a zip or clone it.
+Node.js >=0.10 is required
+
+1. run ```npm install brokowski```
 2. run ```npm install```
 3. start via ```node app.js```
-
-## Dependencies
-Node.js >=0.10
 
 ## REST API
 Given the server runs at ```http://localhost:3000```:
