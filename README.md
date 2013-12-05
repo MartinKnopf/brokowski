@@ -19,19 +19,19 @@ Node.js >=0.10
 Given the server runs at ```http://localhost:3000```:
 
 ### subscribe
-method: POST
-url: ```http://localhost:3000/subscribe/your-event```
-json: ```{subscriber: "http://localhost:12345/your-event", method: "GET"}```
+* method: POST
+* url: ```http://localhost:3000/subscribe/your-event```
+* json: ```{subscriber: "http://localhost:12345/your-event", method: "GET"}```
 
 ### publish
-method: POST
-url: ```http://localhost:3000/publish/your-event```
-json: any
+* method: POST
+* url: ```http://localhost:3000/publish/your-event```
+* json: any
 
 ### monitoring
-method: GET
-url: ```http:localhost:3000/monitoring/alive```
-should return ```200```
+* method: GET
+* url: ```http:localhost:3000/monitoring/alive```
+* should return ```200```
 
 ## TODO
 * hardening
