@@ -1,5 +1,6 @@
 var request
   , domain = require('domain')
+  , _ = require('lodash')
   , subscriptions = {};
 
 module.exports = function(req) {
@@ -31,14 +32,21 @@ module.exports = function(req) {
           , sub = {subscriber: req.body.subscriber, method: req.body.method};
 
         if(sub.subscriber && sub.method && isValidHttpMethod(sub.method)) {
-          if(subscriptions[event]) subscriptions[event].push(sub);
-          else subscriptions[event] = [sub];
-          res.send(200);
+          if(notYetSubscribed(event, sub)) {
+            if(subscriptions[event]) subscriptions[event].push(sub);
+            else subscriptions[event] = [sub];
+            res.send(200);
+          } else {
+            res.send(500);
+          }
         } else {
-          res.send(405);
+          res.send(400);
         }
       });
-    }    
+    },
+    clear: function() {
+      subscriptions = {};
+    }
   }
 };
 
@@ -61,4 +69,10 @@ function runInDomain(d, req, res, f) {
 function isValidHttpMethod(method) {
   method = method.toLowerCase();
   return request[method];
+}
+
+function notYetSubscribed(event, subscriber) {
+  return _.isEmpty(_.filter(subscriptions[event], function(subscription) {
+    return _.isEqual(subscription, subscriber);
+  }));
 }

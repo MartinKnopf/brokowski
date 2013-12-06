@@ -3,7 +3,7 @@ brokowski
 
 Node.js based RESTful publish/subscribe broker.
 
-[![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski) v 0.0.3
+[![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski)
 
 A subscriber tells the eventbus which event it wants to subscribe to and which REST method the eventbus should call when that event is triggerd.
 
@@ -20,6 +20,9 @@ Given the brokowski server runs at ```http://localhost:3000```:
 * method: POST
 * url: ```http://localhost:3000/subscribe/your-event```
 * json: ```{subscriber: "http://localhost:12345/your-event", method: "GET" / "POST" / "PUT" / ...}```
+* returns 200 if everything is ok
+* returns 400 if json incomplete
+* returns 500 if subscription already registered
 
 ### publish
 * method: POST
