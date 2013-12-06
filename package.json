@@ -1,6 +1,6 @@
 {
   "name": "brokowski",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "Horsed",
   "description": "RESTful publish/subscribe broker",
   "private": false,
