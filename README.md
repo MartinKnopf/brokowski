@@ -34,3 +34,5 @@ Given the brokowski server runs at ```http://localhost:3000```:
 ## TODO
 * automatic clean up
 * subscriber priority?
+* instructions for use with forever
+* brokowski module for use in other node/express servers
