@@ -1,17 +1,19 @@
 var assert = require('assert')
   , should = require('should')
-  , pubsub
-  , request = require('request');
+  , request = require('request')
+  , pubsub;
 
 describe('PubSub', function() {
 
   describe('subscribing', function() {
 
-    beforeEach(function() {
+    beforeEach(function(done) {
       pubsub = require('../routes/pubsub.js')(request);
+      pubsub.clear();
+      done();
     });
 
-    it('should return 200', function(done) {
+    it('should return 200 when everything is ok', function(done) {
       pubsub.subscribe({
         params: {
           event: 'event'
@@ -25,7 +27,32 @@ describe('PubSub', function() {
       });
     });
 
-    it('should return 405 when subscriber\'s url is missing', function(done) {
+    it('should return 500 on repeated subscription', function(done) {
+      pubsub.subscribe({
+        params: {
+          event: 'event'
+        },
+        body: {
+          subscriber: 'http://localhost:3000/eventomat',
+          method: 'POST'
+        }
+      }, {
+        send: function(statusCode) { statusCode.should.equal(200); }
+      });
+      pubsub.subscribe({
+        params: {
+          event: 'event'
+        },
+        body: {
+          subscriber: 'http://localhost:3000/eventomat',
+          method: 'POST'
+        }
+      }, {
+        send: function(statusCode) { statusCode.should.equal(500); done(); }
+      });
+    });
+
+    it('should return 400 when subscriber\'s url is missing', function(done) {
       pubsub.subscribe({
         params: {
           event: 'event'
@@ -34,11 +61,11 @@ describe('PubSub', function() {
           method: 'POST'
         }
       }, {
-        send: function(statusCode) { statusCode.should.equal(405); done(); }
+        send: function(statusCode) { statusCode.should.equal(400); done(); }
       });
     });
 
-    it('should return 405 when subscriber\'s method is missing', function(done) {
+    it('should return 400 when subscriber\'s method is missing', function(done) {
       pubsub.subscribe({
         params: {
           event: 'event'
@@ -47,11 +74,11 @@ describe('PubSub', function() {
           subscriber: 'http://localhost:3000/eventomat'
         }
       }, {
-        send: function(statusCode) { statusCode.should.equal(405); done(); }
+        send: function(statusCode) { statusCode.should.equal(400); done(); }
       });
     });
 
-    it('should return 405 when subscriber\'s method is invalid', function(done) {
+    it('should return 400 when subscriber\'s method is invalid', function(done) {
       pubsub.subscribe({
         params: {
           event: 'event'
@@ -61,7 +88,7 @@ describe('PubSub', function() {
           method: 'INVALID_HTTP_METHOD'
         }
       }, {
-        send: function(statusCode) { statusCode.should.equal(405); done(); }
+        send: function(statusCode) { statusCode.should.equal(400); done(); }
       });
     });
   });
