@@ -5,34 +5,37 @@ Standalone publish/subscribe broker. [Zeromq](http://zeromq.org/) API or RESTful
 
 [![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski)
 
-A subscriber tells the eventbus which event it wants to subscribe to and which REST method the eventbus should call when that event is triggerd.
-
 ## Installation
 Node.js >=0.10 is required
+
+TODO: Installation with zeromq
 
 1. installing: ```npm install brokowski```
 2. running: ```node node_modules/brokowski/brokowski```
 
-## REST API
-Given the brokowski server runs at ```tcp://127.0.0.1:3000```:
+## Use with Zeromq
+Given brokowski is bound to ```tcp://127.0.0.1:3000```:
 
 ### subscribe
-* topic: ```subscribe/your-event```
-* msg: ```{subscriber: "tcp://127.0.0.1:12345" }```
+publish a message:
+* address: ```tcp://127.0.0.1:3000```
+* topic: ```subscribe```
+* msg: ```"{ "subscriber": "tcp://127.0.0.1:12345", "event": "my-event" }"```
 
 ### publish
-* topic: ```publish/your-event```
-* msg: anything
+publish a message:
+* address: ```tcp://127.0.0.1:3000```
+* topic: ```publish```
+* msg: ```"{ "event": "my-event", "data": any JSON }"```
 
 ### monitoring
-* topic: ```monitoring/alive```
-* should return ```OK```
+TBD (with request/reply?)
 
 ### example
 TBD
 
 ## REST API
-Given the brokowski server runs at ```http://localhost:3000```:
+Given brokowski runs at ```http://localhost:3000```:
 
 ### subscribe
 * method: POST
