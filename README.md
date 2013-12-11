@@ -59,7 +59,6 @@ TBD
 * automatic clean up
 * subscriber priority?
 * instructions for use with forever
-* examples
 * HTTPS
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Horsed/brokowski/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
