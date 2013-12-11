@@ -5,7 +5,7 @@
   "description": "RESTful publish/subscribe broker",
   "private": false,
   "scripts": {
-    "start": "node brokowski",
+    "start": "node startAsRestBroker",
     "test": "mocha"
   },
   "license": "MIT",
