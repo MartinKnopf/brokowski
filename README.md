@@ -1,7 +1,11 @@
 brokowski
 ===========
 
-Standalone publish/subscribe broker. [Zeromq](http://zeromq.org/) based socket or RESTful API. Also available as a middleware for use in [express](http://expressjs.com/)/[connect](http://www.senchalabs.org/connect/) based servers.
+Standalone publish/subscribe broker for use as a
+* [Zeromq](http://zeromq.org/) based XPUB/XSUB proxy
+* HTTP server with a RESTful API
+
+Brokowski will be available as a middleware for use in [express](http://expressjs.com/)/[connect](http://www.senchalabs.org/connect/) based servers.
 
 [![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski)
 
