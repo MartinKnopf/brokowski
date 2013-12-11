@@ -1,6 +1,6 @@
 {
   "name": "brokowski",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Horsed",
   "description": "publish/subscribe broker with support for REST and zeromq",
   "private": false,
