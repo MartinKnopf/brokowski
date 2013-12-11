@@ -1,1 +1,1 @@
-require('./brokowski').rest().start(process.env.PORT);
+require('./brokowski').broker().start(process.env.PORT);

@@ -8,6 +8,8 @@ function PubSub(req) {
 }
 
 PubSub.prototype.publish = function(req, res) {
+  res.send(200);
+  res.end();
   var d = domain.create()
     , self = this;
   
@@ -20,13 +22,15 @@ PubSub.prototype.publish = function(req, res) {
         var sub = self.subscriptions[event][i];
         try {
           self.request[sub.method.toLowerCase()]({url: sub.subscriber, json: data});
-        } catch(err) { /* ignore this subscriber and go on to the next */ }
+        } catch(err) { delete self.subscriptions[event][i]; /* remove this subscriber and go on to the next */ }
       }
     }
-
-    res.send(200);
   });
 };
+
+function asMillies(hrtime) {
+  return (hrtime[0] * 1e9 + hrtime[1]) / 1e6;
+}
 
 PubSub.prototype.subscribe = function(req, res) {
   var d = domain.create()

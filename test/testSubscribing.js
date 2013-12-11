@@ -3,12 +3,12 @@ var assert = require('assert')
   , request = require('request')
   , pubsub;
 
-describe('PubSub', function() {
+describe('Broker', function() {
 
   describe('subscribing', function() {
 
     beforeEach(function() {
-      pubsub = require('../rest/pubsub.js')(request);
+      pubsub = require('../rest/broker.js')(request);
     });
 
     it('should return 200 when everything is ok', function(done) {
