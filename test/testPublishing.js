@@ -3,13 +3,13 @@ var assert = require('assert')
   , pubsub
   , request;
 
-describe('PubSub', function() {
+describe('Broker', function() {
 
   describe('publishing', function() {
 
     beforeEach(function() {
       request = {};
-      pubsub = require('../rest/pubsub.js')(request);
+      pubsub = require('../rest/broker.js')(request);
     });
 
     it('should return 200', function(done) {
@@ -21,7 +21,8 @@ describe('PubSub', function() {
         },
         body: {}
       }, {
-        send: function(statusCode) { statusCode.should.equal(200); done(); }
+        send: function(statusCode) { statusCode.should.equal(200); done(); },
+        end: function() {}
       });
     });
 
@@ -36,7 +37,8 @@ describe('PubSub', function() {
         },
         body: {}
       }, {
-        send: function(statusCode) { done(); }
+        send: function(statusCode) { done(); },
+        end: function() {}
       });
     });
 
@@ -51,7 +53,8 @@ describe('PubSub', function() {
         },
         body: {}
       }, {
-        send: function(statusCode) { done(); }
+        send: function(statusCode) { done(); },
+        end: function() {}
       });
     });
 
@@ -68,7 +71,8 @@ describe('PubSub', function() {
         },
         body: {}
       }, {
-        send: function(statusCode) { done(); }
+        send: function(statusCode) { done(); },
+        end: function() {}
       });
     });
 
@@ -83,7 +87,8 @@ describe('PubSub', function() {
         },
         body: { test: true }
       }, {
-        send: function(statusCode) { done(); }
+        send: function(statusCode) { done(); },
+        end: function() {}
       });
     });
 
@@ -99,7 +104,8 @@ describe('PubSub', function() {
         },
         body: {}
       }, {
-        send: function(statusCode) { statusCode.should.equal(200); done(); }
+        send: function(statusCode) { statusCode.should.equal(200); done(); },
+        end: function() {}
       });
     });
 
@@ -112,7 +118,8 @@ describe('PubSub', function() {
         },
         body: {}
       }, {
-        send: function(statusCode) { statusCode.should.equal(200); done(); }
+        send: function(statusCode) { statusCode.should.equal(200); done(); },
+        end: function() {}
       });
     });
   });

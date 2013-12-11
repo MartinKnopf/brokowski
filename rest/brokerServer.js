@@ -1,9 +1,6 @@
-/**
- * This is an express server.
- */
 function RestBrokowski() {
   this.express = require('express');
-  this.routes = require('./pubsub')(require('request'));
+  this.routes = require('./broker')(require('request'));
   this.monitoring = require('./monitoring');
   this.http = require('http');
   this.path = require('path');
@@ -22,17 +19,16 @@ function RestBrokowski() {
     self.app.use(self.express.errorHandler());
   });
 
-  this.app.post('/publish/:event', this.routes.publish);
-  this.app.post('/subscribe/:event', this.routes.subscribe);
+  this.app.post('/publish/:event', function(req, res) {self.routes.publish(req, res);});
+  this.app.post('/subscribe/:event', function(req, res) {self.routes.subscribe(req, res);});
   this.app.get('/monitoring/:check', this.monitoring.check);
-
 };
 
 RestBrokowski.prototype.start = function(port) {
   this.app.set('port', port || 3000);
   var self = this;
   this.restServer = this.http.createServer(this.app).listen(this.app.get('port'), function() {
-    console.log("brokowski server listening on port " + self.app.get('port'));
+    console.log("brokowski broker listening on port " + self.app.get('port'));
   });
   return this;
 }
@@ -42,6 +38,6 @@ RestBrokowski.prototype.close = function() {
   return this;
 }
 
-exports.rest = function() {
+exports.broker = function() {
   return new RestBrokowski();
 }
