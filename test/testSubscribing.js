@@ -7,10 +7,8 @@ describe('PubSub', function() {
 
   describe('subscribing', function() {
 
-    beforeEach(function(done) {
-      pubsub = require('../routes/pubsub.js')(request);
-      pubsub.clear();
-      done();
+    beforeEach(function() {
+      pubsub = require('../rest/pubsub.js')(request);
     });
 
     it('should return 200 when everything is ok', function(done) {

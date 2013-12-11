@@ -9,7 +9,7 @@ describe('PubSub', function() {
 
     beforeEach(function() {
       request = {};
-      pubsub = require('../routes/pubsub.js')(request);
+      pubsub = require('../rest/pubsub.js')(request);
     });
 
     it('should return 200', function(done) {
