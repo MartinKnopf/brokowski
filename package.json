@@ -1,11 +1,11 @@
 {
   "name": "brokowski",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Horsed",
   "description": "Brokered RESTful publish/subscribe: Broker, publisher and subscriber talking via RESTful interfaces.",
   "private": false,
   "scripts": {
-    "start": "node startAsRestBroker",
+    "start": "node startBroker",
     "test": "mocha"
   },
   "license": "MIT",
