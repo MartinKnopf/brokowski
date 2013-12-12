@@ -1,6 +1,6 @@
 brokowski [![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski)
 ===========
-
+ 
 Brokered RESTful publish/subscribe: Broker, publisher and subscriber talking via RESTful interfaces.
 
 Brokowski has a RESTful pub/sub broker, which runs as a HTTP server. It receives subscriptions and events via a RESTful API. The events will be forwarded to the connected subscriber services.
