@@ -9,7 +9,7 @@ function Publisher(broker) {
 Publisher.prototype.send = function(event, data) {
   this.request.post({url: this.util.normalizeBrokerUrl(this.broker) + 'publish/' + event, json: data});
   return this;
-}
+};
 
 exports.pub = function(broker) {
   return new Publisher(broker);

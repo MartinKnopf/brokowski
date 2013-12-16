@@ -1,6 +1,8 @@
 var domain = require('domain')
   , _ = require('lodash')
-  , request = require('request');
+  , request = require('request')
+  , events = require('events')
+  , eventEmitter = new events.EventEmitter();
 
 function PubSub(req) {
   this.subscriptions = {};
@@ -10,43 +12,21 @@ function PubSub(req) {
 PubSub.prototype.publish = function(req, res) {
   res.send(200);
   res.end();
-  var d = domain.create()
-    , self = this;
-  
-  this.runInDomain(d, req, res, function() {
-    var event = req.params['event']
-      , data = req.body;
-
-    if(self.subscriptions[event]) {
-      for(var i = 0, len = self.subscriptions[event].length; i < len; i++) {
-        var sub = self.subscriptions[event][i];
-        try {
-          self.request[sub.method.toLowerCase()]({url: sub.subscriber, json: data});
-        } catch(err) { delete self.subscriptions[event][i]; /* remove this subscriber and go on to the next */ }
-      }
-    }
-  });
+  eventEmitter.emit(req.params['event'], req.body);
 };
 
 PubSub.prototype.subscribe = function(req, res) {
-  var d = domain.create()
-    , self = this;
   
-  this.runInDomain(d, req, res, function() {
-    var event = req.params['event']
-      , sub = {subscriber: req.body.subscriber, method: req.body.method};
+  // check subscription
+  
+  res.end();
 
-    if(sub.subscriber && sub.method && self.isValidHttpMethod(sub.method)) {
-      if(self.notYetSubscribed(event, sub)) {
-        if(self.subscriptions[event]) self.subscriptions[event].push(sub);
-        else self.subscriptions[event] = [sub];
-        res.send(200);
-      } else {
-        res.send(500);
-      }
-    } else {
-      res.send(400);
-    }
+  var self = this;
+  
+  eventEmitter.on(req.params['event'], function(data) {
+    self.runInDomain(domain.create(), req, res, function() {
+      self.request[req.body.method.toLowerCase()]({url: req.body.subscriber, json: data});
+    });
   });
 };
 
