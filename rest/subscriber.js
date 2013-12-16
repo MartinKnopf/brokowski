@@ -18,7 +18,6 @@ SubscriberServer.prototype.start = function(port, name, broker) {
   this.app = express();
   this.app.set('port', this.port || 3000);
   this.app.configure(function(){
-    self.app.use(express.logger('dev'));
     self.app.use(express.bodyParser());
     self.app.use(express.methodOverride());
     self.app.use(self.app.router);

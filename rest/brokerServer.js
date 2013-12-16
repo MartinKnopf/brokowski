@@ -8,7 +8,6 @@ function RestBrokowski() {
   var self = this;
 
   this.app.configure(function(){
-    self.app.use(self.express.logger('dev'));
     self.app.use(self.express.bodyParser());
     self.app.use(self.express.methodOverride());
     self.app.use(self.app.router);

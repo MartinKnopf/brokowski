@@ -28,10 +28,6 @@ PubSub.prototype.publish = function(req, res) {
   });
 };
 
-function asMillies(hrtime) {
-  return (hrtime[0] * 1e9 + hrtime[1]) / 1e6;
-}
-
 PubSub.prototype.subscribe = function(req, res) {
   var d = domain.create()
     , self = this;
