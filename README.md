@@ -124,14 +124,14 @@ pub.send('my-event', {coolstuff: true});
 
 ## Performance (0.1.1)
 
-  For the performance tests I used most of the test code of [node-zmq](https://github.com/JustinTulloss/zeromq.node).
+  For the performance tests I used most of the test code from [node-zmq](https://github.com/JustinTulloss/zeromq.node).
 
   My machine:
 
-    * Windows 7 64bit
-    * AMD Phenom(tm) II X4 955 @ 3.2 GHz
-    * 6 GB memory
-    * 100 Mbit LAN
+  * Windows 7 64bit
+  * AMD Phenom(tm) II X4 955 @ 3.2 GHz
+  * 6 GB memory
+  * 100 Mbit LAN
 
 ### Tests with single subscriber:
 
@@ -170,10 +170,7 @@ pub.send('my-event', {coolstuff: true});
 
 ## TODO
 
-  * there is a memory leak caused by resubscription of the same subscriber (unsubscribing has to fix this)
-  * unsubscribing
   * automatic subscriptions clean up
-  * subscribing should fail when not receiving 200
   * broker config options
   * HTTPS
   * message qeueing?
