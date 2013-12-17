@@ -19,22 +19,34 @@ var sub = require('brokowski').sub().start(6002, 'mysubscriber', 'http://192.168
 // sub always gets notified when this event is published
 sub
   .get('my-event', function(data) {
-    if(data.coolstuff)
-      console.log('get my-event');
+    if(data.coolstuff) console.log('get my-event');
   })
   .post('my-event', function(data) {
-    if(data.coolstuff)
-      console.log('post my-event');
+    if(data.coolstuff) console.log('post my-event');
   })
   .put('my-event', function(data) {
-    if(data.coolstuff)
-      console.log('put my-event');
+    if(data.coolstuff) console.log('put my-event');
   })
   .delete('my-event', function(data) {
-    if(data.coolstuff)
-      console.log('delete my-event');
+    if(data.coolstuff) console.log('delete my-event');
   })
   .subscribe({
+    event: 'my-other-event',
+    method: 'GET',
+    roundRobin: false,
+    handler: function(data) {
+      console.log('GET my-other-event');
+    }
+  });
+  .resubscribe({
+    event: 'my-other-event',
+    method: 'GET',
+    roundRobin: false,
+    handler: function(data) {
+      console.log('GET my-other-event');
+    }
+  });
+  .unsubscribe({
     event: 'my-other-event',
     method: 'GET',
     roundRobin: false,
@@ -58,18 +70,16 @@ pub.send('my-event', {coolstuff: true});
 
 ## RESTful API of the broker
 
-  ### Subscription options
-    
-    | mandatory option | description                                                                                              | example                                                      |
-    | :--------------- | :------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
-    | **event**        | subscribed event                                                                                         | ```'my-event'```                                             |
-    | **hostname**     | subscriber host (default: ```'localhost'```)                                                             | ```'192.168.0.77'```                                         |
-    | **port**         | subscriber port (default: port provided to ```sub.start()```)                                            | ```1234```                                                   |
-    | **path**         | subscriber uri path (default: service name, event: ```/myservice/GET/myevent```)                         | ```'/myservice/subscriptions'```                             |
-    | **method**       | HTTP method                                                                                              | ```'GET'``` or ```'POST'``` or ```'PUT'``` or ```'DELETE'``` |
-    | **roundRobin**   | whether sub should get notified in a round-robin queue or whenver the ovent occurs (default: ```true```) | ```true``` or ```false```                                    |
+  | mandatory option | description                                                                                              | example                                                      |
+  | :--------------- | :------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
+  | **event**        | subscribed event                                                                                         | ```'my-event'```                                             |
+  | **hostname**     | subscriber host (default: ```'localhost'```)                                                             | ```'192.168.0.77'```                                         |
+  | **port**         | subscriber port (default: port provided to ```sub.start()```)                                            | ```1234```                                                   |
+  | **path**         | subscriber uri path (default: service name, event: ```/myservice/GET/myevent```)                         | ```'/myservice/subscriptions'```                             |
+  | **method**       | HTTP method                                                                                              | ```'GET'``` or ```'POST'``` or ```'PUT'``` or ```'DELETE'``` |
+  | **roundRobin**   | whether sub should get notified in a round-robin queue or whenver the ovent occurs (default: ```true```) | ```true``` or ```false```                                    |
 
-    **The default options are only used in** ```sub.subscribe(options)```
+  **The default options are only used in** ```sub.subscribe(options)```, ```sub.resubscribe(options)```, ```sub.unsubscribe(options)```
 
   ### subscribe
 
