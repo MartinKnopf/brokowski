@@ -81,46 +81,46 @@ pub.send('my-event', {coolstuff: true});
 | **method**       | HTTP method                                                                                              | ```'GET'``` or ```'POST'``` or ```'PUT'``` or ```'DELETE'``` |
 | **roundRobin**   | whether sub should get notified in a round-robin queue or whenver the ovent occurs (default: ```true```) | ```true``` or ```false```                                    |
 
-  **The default options are only used in** ```sub.subscribe(options)```, ```sub.resubscribe(options)```, ```sub.unsubscribe(options)```
+  **The default options are only used in** ```subscribe```, ```resubscribe```, ```unsubscribe```
 
-  ### subscribe
+### subscribe
 
-    * method: POST
-    * url: ```http://localhost:6000/subscribe/myevent```
-    * json: see the options
-    * returns 200 if everything is ok
-    * returns 400 if json is incomplete
-    * returns 500 if subscriber url already subscribed to event
+  * method: POST
+  * url: ```http://localhost:6000/subscribe/myevent```
+  * json: see the options
+  * returns 200 if everything is ok
+  * returns 400 if json is incomplete
+  * returns 500 if subscriber url already subscribed to event
 
-  ### resubscribe
+### resubscribe
 
-    All subscribers (partially) matching the given json will be removed before the new subscription.
-    * method: POST
-    * url: ```http://localhost:6000/resubscribe/myevent```
-    * json: see the options
-    * returns 200 if everything is ok
-    * returns 400 if json is incomplete
+  All subscribers (partially) matching the given json will be removed before the new subscription.
+  * method: POST
+  * url: ```http://localhost:6000/resubscribe/myevent```
+  * json: see the options
+  * returns 200 if everything is ok
+  * returns 400 if json is incomplete
 
-  ### unsubscribe
+### unsubscribe
 
-    All subscribers (partially) matching the given json will be removed.
-    * method: POST
-    * url: ```http://localhost:6000/unsubscribe/myevent```
-    * json: see the options
-    * returns 200 if everything is ok
+  All subscribers (partially) matching the given json will be removed.
+  * method: POST
+  * url: ```http://localhost:6000/unsubscribe/myevent```
+  * json: see the options
+  * returns 200 if everything is ok
 
-  ### publish
+### publish
 
-    * method: POST
-    * url: ```http://localhost:6000/publish/myevent```
-    * json: any
-    * returns 200 if everything is ok
+  * method: POST
+  * url: ```http://localhost:6000/publish/myevent```
+  * json: any
+  * returns 200 if everything is ok
 
-  ### monitoring
+### monitoring
 
-    * method: GET
-    * url: ```http://localhost:6000/monitoring/alive```
-    * should return ```200```
+  * method: GET
+  * url: ```http://localhost:6000/monitoring/alive```
+  * should return ```200```
 
 ## Performance (0.1.1)
 
@@ -133,25 +133,25 @@ pub.send('my-event', {coolstuff: true});
     * 6 GB memory
     * 100 Mbit LAN
 
-  ### Tests with single subscriber:
+### Tests with single subscriber:
 
-    |                 | **10.000  messages** | **100.000 messages** |
-    | --------------: |:--------------------:| :-------------------:|
-    |      **2 Byte** | 3568 [msg/s]         | 3658 [msg/s]         |
-    |     **64 Byte** | 3556 [msg/s]         | 3585 [msg/s]         |
-    |   **3072 Byte** | 3118 [msg/s]         | 3043 [msg/s]         |
-    | **64.000 Byte** | 1187 [msg/s]         | publisher process ran out of memory |
+|                 | **10.000  messages** | **100.000 messages** |
+| --------------: |:--------------------:| :-------------------:|
+|      **2 Byte** | 3568 [msg/s]         | 3658 [msg/s]         |
+|     **64 Byte** | 3556 [msg/s]         | 3585 [msg/s]         |
+|   **3072 Byte** | 3118 [msg/s]         | 3043 [msg/s]         |
+| **64.000 Byte** | 1187 [msg/s]         | publisher process ran out of memory |
 
-  ### Tests with two looped subscribers listening to the same event:
+### Tests with two looped subscribers listening to the same event:
 
-    The results are almost the same for both the subscribers.
+  The results were almost the same for both the subscribers, so I just documented the worst.
 
-    |                 | **10.000  messages** | **100.000 messages** |
-    | --------------: |:--------------------:| :-------------------:|
-    |      **2 Byte** | 2541 [msg/s]         | 2317 [msg/s]         |
-    |     **64 Byte** | 2501 [msg/s]         | 2422 [msg/s]         |
-    |   **3072 Byte** | 2213 [msg/s]         | 2119 [msg/s]         |
-    | **64.000 Byte** | 528 [msg/s]          | publisher process ran out of memory |
+|                 | **10.000  messages** | **100.000 messages** |
+| --------------: |:--------------------:| :-------------------:|
+|      **2 Byte** | 2541 [msg/s]         | 2317 [msg/s]         |
+|     **64 Byte** | 2501 [msg/s]         | 2422 [msg/s]         |
+|   **3072 Byte** | 2213 [msg/s]         | 2119 [msg/s]         |
+| **64.000 Byte** | 528 [msg/s]          | publisher process ran out of memory |
 
   You can test the performance yourself:
 
