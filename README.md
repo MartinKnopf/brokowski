@@ -70,6 +70,8 @@ pub.send('my-event', {coolstuff: true});
 
 ## RESTful API of the broker
 
+  Subscription options:
+  
   | mandatory option | description                                                                                              | example                                                      |
   | :--------------- | :------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
   | **event**        | subscribed event                                                                                         | ```'my-event'```                                             |
