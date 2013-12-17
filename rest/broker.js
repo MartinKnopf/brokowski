@@ -1,7 +1,7 @@
 var http = require('http')
   , domain = require('domain')
   , _ = require('lodash')
-  , rr = require('rr');
+  , rr = require('./rr');
 
 
 module.exports = function() {
