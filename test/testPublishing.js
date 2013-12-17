@@ -5,10 +5,10 @@ var assert = require('assert')
 
 describe('Broker', function() {
 
-  describe('publishing', function() {
+  describe.only('publishing', function() {
 
     beforeEach(function() {
-      request = {};
+      request = {post: function() {}};
       pubsub = require('../rest/broker.js')(request);
     });
 
@@ -60,7 +60,7 @@ describe('Broker', function() {
 
     it('should notify multiple subscribers', function(done) {
       request.get = function(options) { options.url.should.equal('http://localhost:1111/event'); };
-      request.post = function(options) { options.url.should.equal('http://localhost:2222/event'); };
+      request.post = function(options) { options.url.should.equal('http://localhost:2222/event'); done(); };
 
       subscribe('event', 'http://localhost:1111/event', 'GET');
       subscribe('event', 'http://localhost:2222/event', 'POST');
@@ -71,13 +71,13 @@ describe('Broker', function() {
         },
         body: {}
       }, {
-        send: function(statusCode) { done(); },
+        send: function(statusCode) { },
         end: function() {}
       });
     });
 
     it('should send data to subscriber', function(done) {
-      request.post = function(options) { options.json.test.should.be.ok(); };
+      request.post = function(options) { options.json.test.should.be.ok(); done(); };
 
       subscribe('event', 'http://localhost:4730/event', 'POST');
 
@@ -87,7 +87,7 @@ describe('Broker', function() {
         },
         body: { test: true }
       }, {
-        send: function(statusCode) { done(); },
+        send: function(statusCode) { },
         end: function() {}
       });
     });
@@ -135,6 +135,7 @@ var subscribe = function(event, url, method) {
       method: method
     }
   }, {
-    send: function(statusCode) {}
+    send: function(statusCode) {},
+    end: function(statusCode) {}
   });
 };
