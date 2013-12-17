@@ -72,14 +72,14 @@ pub.send('my-event', {coolstuff: true});
 
   Subscription options:
   
-  | mandatory option | description                                                                                              | example                                                      |
-  | :--------------- | :------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
-  | **event**        | subscribed event                                                                                         | ```'my-event'```                                             |
-  | **hostname**     | subscriber host (default: ```'localhost'```)                                                             | ```'192.168.0.77'```                                         |
-  | **port**         | subscriber port (default: port provided to ```sub.start()```)                                            | ```1234```                                                   |
-  | **path**         | subscriber uri path (default: service name, event: ```/myservice/GET/myevent```)                         | ```'/myservice/subscriptions'```                             |
-  | **method**       | HTTP method                                                                                              | ```'GET'``` or ```'POST'``` or ```'PUT'``` or ```'DELETE'``` |
-  | **roundRobin**   | whether sub should get notified in a round-robin queue or whenver the ovent occurs (default: ```true```) | ```true``` or ```false```                                    |
+| mandatory option | description                                                                                              | example                                                      |
+| :--------------- | :------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
+| **event**        | subscribed event                                                                                         | ```'my-event'```                                             |
+| **hostname**     | subscriber host (default: ```'localhost'```)                                                             | ```'192.168.0.77'```                                         |
+| **port**         | subscriber port (default: port provided to ```sub.start()```)                                            | ```1234```                                                   |
+| **path**         | subscriber uri path (default: service name, event: ```/myservice/GET/myevent```)                         | ```'/myservice/subscriptions'```                             |
+| **method**       | HTTP method                                                                                              | ```'GET'``` or ```'POST'``` or ```'PUT'``` or ```'DELETE'``` |
+| **roundRobin**   | whether sub should get notified in a round-robin queue or whenver the ovent occurs (default: ```true```) | ```true``` or ```false```                                    |
 
   **The default options are only used in** ```sub.subscribe(options)```, ```sub.resubscribe(options)```, ```sub.unsubscribe(options)```
 
