@@ -1,6 +1,6 @@
-exports.check = function(req, res) {
-  if(req.params['check'] == 'alive')
-    res.send(200);
+exports.check = function(check) {
+  if(check == 'alive')
+    return 200;
   else
-    res.send(405);
+    return 405;
 };

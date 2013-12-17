@@ -22,48 +22,35 @@
   * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
   * THE SOFTWARE.
   */
+  
+var assert = require('assert');
 
-var assert = require('assert')
-  , sub = require('../brokowski').sub();
-
-if (process.argv.length != 7) {
-  console.log('usage: local_thr <bind-to> <message-size> <message-count>');
-  process.exit(1);
+if (process.argv.length != 6) {
+  console.log('usage: remote_thr <bind-to> <message-size> <message-count>')
+  process.exit(1)
 }
 
-var port = process.argv[2];
-var event = process.argv[3];
-var broker = process.argv[4];
-var message_size = Number(process.argv[5]);
-var message_count = Number(process.argv[6]);
-var counter = 0;
-var timer;
+var connect_to = process.argv[2]
+var event = process.argv[3]
+var message_size = Number(process.argv[4])
+var message_count = Number(process.argv[5])
+var message = new Buffer(message_size)
+message.fill('h')
 
-sub.start(port, event, broker);
+var counter = 0
+  , i = 0;
 
+pub = require('../brokowski').pub(connect_to);
 
-sub.post(event, function (data) {
-  if (!timer) {
-    console.log('started receiving');
-    timer = process.hrtime();
-  }
-
-  assert.equal(data.length, message_size);
-  if (++counter === message_count) finish();
-})
-
-function finish(){
-  var endtime = process.hrtime(timer);
-  var sec = endtime[0] + (endtime[1]/1000000000);
-  var throughput = message_count / sec;
-  var megabits = (throughput * message_size * 8) / 1000000;
-
-  console.log('message size: %d [B]', message_size);
-  console.log('message count: %d', message_count);
-  console.log('mean throughput: %d [msg/s]', throughput.toFixed(0));
-  console.log('mean throughput: %d [Mbit/s]', megabits.toFixed(0));
-  console.log('overall time: %d secs and %d nanoseconds', endtime[0], endtime[1]);
-
-  counter = 0;
-  timer = undefined;
+function send(){
+  pub.send(event, message.toString() + i);
+  
+  if(i++ < message_count)
+    setTimeout(send, 1000);
 }
+
+// because of what seems to be a bug in node-zmq, we would lose messages
+// if we start sending immediately after calling connect(), so to make this
+// benchmark behave well, we wait a bit...
+
+setTimeout(send, 1000);

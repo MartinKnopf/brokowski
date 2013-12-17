@@ -5,39 +5,28 @@ var assert = require('assert')
   , connect = require('connect')
   , request = require('request');
 
-describe('Subscriber', function() {
+describe('[testSubscriber.js] Subscriber', function() {
 
   it('should subscribe at broker', function(done) {
     var broker = connect().use(function(req, res) {
-
       req.url.should.equal('/subscribe/myevent');
-      
-      jsonBody(req, res, function(err, body) {
-        
-        assert.equal(body.subscriber, 'http://localhost:6000/myservice/myevent');
-        assert.equal(body.method, 'GET');
-
-        done();
-      });
+      done();
     });
 
     http.createServer(broker).listen(5999);
 
     var subscriber = require('../rest/subscriber.js').sub().start(6000, 'myservice', 'http://localhost:5999')
 
-    subscriber.subscribe('myevent', 'GET');
+    subscriber.subscribe({
+      event: 'myevent',
+      method: 'GET'
+    });
   });
 
-  it('should subscribe to GET event implicitly', function(done) {
+  it('should subscribe to GET event', function(done) {
     var broker = connect().use(function(req, res) {
-
-      req.url.should.equal('/subscribe/myevent');
-      
       jsonBody(req, res, function(err, body) {
-        
-        assert.equal(body.subscriber, 'http://localhost:6002/myservice/myevent');
         assert.equal(body.method, 'GET');
-
         done();
       });
     });
@@ -49,16 +38,10 @@ describe('Subscriber', function() {
     subscriber.get('myevent', function() { /*empty handler*/ });
   });
 
-  it('should subscribe to POST event implicitly', function(done) {
+  it('should subscribe to POST event', function(done) {
     var broker = connect().use(function(req, res) {
-
-      req.url.should.equal('/subscribe/myevent');
-      
       jsonBody(req, res, function(err, body) {
-        
-        assert.equal(body.subscriber, 'http://localhost:6004/myservice/myevent');
         assert.equal(body.method, 'POST');
-
         done();
       });
     });
@@ -70,16 +53,10 @@ describe('Subscriber', function() {
     subscriber.post('myevent', function() { /*empty handler*/ });
   });
 
-  it('should subscribe to PUT event implicitly', function(done) {
+  it('should subscribe to PUT event', function(done) {
     var broker = connect().use(function(req, res) {
-
-      req.url.should.equal('/subscribe/myevent');
-      
       jsonBody(req, res, function(err, body) {
-        
-        assert.equal(body.subscriber, 'http://localhost:6006/myservice/myevent');
         assert.equal(body.method, 'PUT');
-
         done();
       });
     });
@@ -91,16 +68,10 @@ describe('Subscriber', function() {
     subscriber.put('myevent', function() { /*empty handler*/ });
   });
 
-  it('should subscribe to DELETE event implicitly', function(done) {
+  it('should subscribe to DELETE event', function(done) {
     var broker = connect().use(function(req, res) {
-
-      req.url.should.equal('/subscribe/myevent');
-      
       jsonBody(req, res, function(err, body) {
-        
-        assert.equal(body.subscriber, 'http://localhost:6008/myservice/myevent');
         assert.equal(body.method, 'DELETE');
-
         done();
       });
     });
@@ -158,8 +129,7 @@ describe('Subscriber', function() {
   });
 
   it('should handle DELETE event and response 200', function(done) {
-    var broker = connect().use(function(req, res) {});
-    http.createServer(broker).listen(6015);
+    http.createServer(connect().use(function(req, res) {})).listen(6015);
 
     var subscriber = require('../rest/subscriber.js').sub().start(6016, 'myservice', 'http://localhost:6015')
     subscriber.delete('myevent', function(data) {
@@ -170,6 +140,24 @@ describe('Subscriber', function() {
     request.del({url: 'http://localhost:6016/myservice/myevent', json: {stuff: true}}, function (err, res, body) {
       assert.equal(res.statusCode, 200);
     });
+  });
+
+  it('should subscribe with default options', function(done) {
+    var broker = connect().use(function(req, res) {
+      jsonBody(req, res, function(err, body) {
+        assert.equal(body.hostname, 'localhost');
+        assert.equal(body.port, 6018);
+        assert.equal(body.path, '/myservice/myevent');
+        assert.equal(body.roundRobin, true);
+        done();
+      });
+    });
+
+    http.createServer(broker).listen(6017);
+
+    var subscriber = require('../rest/subscriber.js').sub().start(6018, 'myservice', 'http://localhost:6017')
+
+    subscriber.delete('myevent', function() { /*empty handler*/ });
   });
 
 });

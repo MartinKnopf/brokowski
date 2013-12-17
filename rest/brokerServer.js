@@ -1,42 +1,114 @@
-function RestBrokowski() {
-  this.express = require('express');
-  this.routes = require('./broker')(require('request'));
-  this.monitoring = require('./monitoring');
-  this.http = require('http');
-  this.path = require('path');
-  this.app = this.express();
+var http = require('http')
+  , toobusy = require('toobusy')
+  , url = require('url')
+  , broker = require('./broker')()
+  , monitoring = require('./monitoring');
+
+
+/**
+ * Expose module.
+ */
+exports.broker = function() { return new BrokowskiServer(); }
+
+
+/**
+ * Constructor.
+ */
+function BrokowskiServer() {}
+
+
+/**
+ * Start HTTP server.
+ */
+BrokowskiServer.prototype.start = function(port) {
   var self = this;
 
-  this.app.configure(function(){
-    self.app.use(self.express.bodyParser());
-    self.app.use(self.express.methodOverride());
-    self.app.use(self.app.router);
-    self.app.use(self.express.static(self.path.join(__dirname, 'public')));
-  });
+  http.createServer(function(req, res) {
 
-  this.app.configure('development', function(){
-    self.app.use(self.express.errorHandler());
-  });
+    if (toobusy()) {
+      res.writeHead(503, 'Server is too busy.')
+      res.end();
+      return;
+    } 
 
-  this.app.post('/publish/:event', function(req, res) {self.routes.publish(req, res);});
-  this.app.post('/subscribe/:event', function(req, res) {self.routes.subscribe(req, res);});
-  this.app.get('/monitoring/:check', this.monitoring.check);
-};
+    try {
+     self[req.method](req, res);
+    } catch(e) {
+      console.log(e);
+      res.statusCode = 500;
+    }
 
-RestBrokowski.prototype.start = function(port) {
-  this.app.set('port', port || 3000);
-  var self = this;
-  this.restServer = this.http.createServer(this.app).listen(this.app.get('port'), function() {
-    console.log("brokowski broker listening on port " + self.app.get('port'));
-  });
-  return this;
+  }).listen(port || 3000);
 }
 
-RestBrokowski.prototype.close = function() {
-  this.restServer.close();
-  return this;
+
+/**
+ * Handle POST request.
+ */
+BrokowskiServer.prototype.POST = function(req, res) {
+  var self = this
+    , uri = url.parse(req.url).pathname.split('/')
+    , data='';
+
+  req.setEncoding('utf8');
+
+  req.on('data', function(chunk) {
+    data += chunk;
+  });
+
+  req.on('end', function() {
+    // self.publish('event-name', data) or self.subscribe('event-name', data)
+    res.statusCode = self[uri[1]](uri[2], data) || 200;
+    res.end();
+  });
 }
 
-exports.broker = function() {
-  return new RestBrokowski();
+
+/**
+ * Handle POST request.
+ */
+BrokowskiServer.prototype.GET = function(req, res) {
+  var uri = url.parse(req.url).pathname.split('/');
+  res.statusCode = this[uri[1]](uri[2]); // this.monitoring('alive');
+  res.end();
+}
+
+
+/**
+ * Handle publish request.
+ */
+BrokowskiServer.prototype.publish = function(event, data) {
+  broker.publish(event, data);
+}
+
+
+/**
+ * Handle subscribe request.
+ */
+BrokowskiServer.prototype.subscribe = function(event, data) {
+  return broker.subscribe(event, JSON.parse(data));
+}
+
+
+/**
+ * Handle resubscribe request.
+ */
+BrokowskiServer.prototype.resubscribe = function(event, data) {
+  return broker.resubscribe(event, JSON.parse(data));
+}
+
+
+/**
+ * Handle unsubscribe request.
+ */
+BrokowskiServer.prototype.unsubscribe = function(event, data) {
+  return broker.unsubscribe(event, JSON.parse(data));
+}
+
+
+/**
+ * Handle monitoring request.
+ */
+BrokowskiServer.prototype.monitoring = function(check) {
+  return check == 'alive' ? 200 : 404;
 }

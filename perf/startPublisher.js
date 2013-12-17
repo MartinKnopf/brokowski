@@ -25,24 +25,26 @@
   
 var assert = require('assert');
 
-if (process.argv.length != 5) {
+if (process.argv.length != 6) {
   console.log('usage: remote_thr <bind-to> <message-size> <message-count>')
   process.exit(1)
 }
 
 var connect_to = process.argv[2]
-var message_size = Number(process.argv[3])
-var message_count = Number(process.argv[4])
+var event = process.argv[3]
+var message_size = Number(process.argv[4])
+var message_count = Number(process.argv[5])
 var message = new Buffer(message_size)
 message.fill('h')
 
 var counter = 0
+  , i = 0;
 
 pub = require('../brokowski').pub(connect_to);
 
 function send(){
-  for (var i = 0; i < message_count; i++) {
-    pub.send('my-event', {msg: message});
+  for (; i < message_count; i++) {
+    pub.send(event, message.toString());
   }
 }
 
