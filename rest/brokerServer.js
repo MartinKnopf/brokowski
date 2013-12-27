@@ -26,7 +26,7 @@ BrokowskiServer.prototype.start = function(port) {
   http.createServer(function(req, res) {
 
     if (toobusy()) {
-      res.writeHead(503, 'Server is too busy.')
+      res.writeHead(503, 'Server is too busy.');
       res.end();
       return;
     } 

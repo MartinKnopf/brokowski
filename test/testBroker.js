@@ -1,5 +1,6 @@
 var assert = require('assert')
   , should = require('should')
+  , _ = require('lodash')
   , broker = require('../rest/broker.js')();
 
 describe('[testBroker.js] Broker:', function() {
@@ -11,170 +12,110 @@ describe('[testBroker.js] Broker:', function() {
   describe('publishing', function() {
 
     it('should forward event to subscriber', function(done) {
-      var sub = {hostname:'localhost',port:4444,path:'path',method:'POST',roundRobin:false};
+      var sub = {hostname:'localhost',port:4444,path:'path',method:'POST'};
       broker.subscribe('my-event', sub);
 
-      broker.publish('my-event', 'some data', {
-        request: function(actualSub) {
-          actualSub.should.equal(sub);
-          return {
-            end: function() {
-              done();
-            }
-          }
-        }
-      });
+      sub.send = function(data) {
+        done();
+      };
+
+      broker.publish('my-event', 'some data');
+    });
+
+    it.skip('should not forward event to subscriber of other event', function(done) {
     });
 
     it('should forward event to multiple subscribers', function(done) {
-      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST',roundRobin:false};
-      var sub2 = {hostname:'localhost',port:8888,path:'path',method:'GET',roundRobin:false};
+      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST'};
+      var sub2 = {hostname:'localhost',port:8888,path:'path',method:'POST'};
       broker.subscribe('my-event', sub1);
       broker.subscribe('my-event', sub2);
 
-      broker.publish('my-event', 'some data', {
-        request: function(currentSub) {
-          currentSub.should.equal(sub1);
-          return {
-            end: function() {
-              if(sub1 === sub2) done();
-              sub1 = sub2;
-            }
-          }
-        }
-      });
-    });
+      sub1.send = function(actualData) {
+        actualData.should.equal('some data');
+      };
 
-    it('should forward event to multiple subscribers using round-robin', function() {
-      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST',roundRobin:true};
-      var sub2 = {hostname:'localhost',port:8888,path:'path',method:'GET',roundRobin:true};
-      var sub3 = {hostname:'localhost',port:1212,path:'path',method:'GET',roundRobin:true};
-      broker.subscribe('my-event', sub1);
-      broker.subscribe('my-event', sub2);
-      broker.subscribe('my-event', sub3);
+      sub2.send = function(actualData) {
+        actualData.should.equal('some data');
+        done();
+      };
 
-      broker.publish('my-event', 'some data', {
-        request: function(actualSub) {
-          actualSub.should.equal(sub1);
-          return {end: function() {}}
-        }
-      });
-
-      broker.publish('my-event', 'some data', {
-        request: function(actualSub) {
-          actualSub.should.equal(sub2);
-          return {end: function() {}}
-        }
-      });
-
-      broker.publish('my-event', 'some data', {
-        request: function(actualSub) {
-          actualSub.should.equal(sub3);
-          return {
-            end: function() {
-              done();
-            }
-          }
-        }
-      });
+      broker.publish('my-event', 'some data');
     });
 
     it('should send data to subscriber', function(done) {
-      var sub = {hostname:'localhost',port:4444,path:'path',method:'POST',roundRobin:false};
+      var sub = {hostname:'localhost',port:4444,path:'path',method:'POST'};
       broker.subscribe('my-event', sub);
 
-      broker.publish('my-event', 'some data', {
-        request: function(actualSub) {
-          return {
-            end: function(data) {
-              data.should.equal('some data');
-              done();
-            }
-          }
-        }
-      });
+      sub.send = function(actualData) {
+        actualData.should.equal('some data');
+        done();
+      };
+
+      broker.publish('my-event', 'some data');
     });
 
     it('should skip broken subscriber', function(done) {
-      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST',roundRobin:false};
-      var sub2 = {hostname:'localhost',port:8888,path:'path',method:'GET',roundRobin:false};
+      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST'};
+      var sub2 = {hostname:'localhost',port:8888,path:'path',method:'GET'};
       broker.subscribe('my-event', sub1);
       broker.subscribe('my-event', sub2);
 
-      broker.publish('my-event', 'some data', {
-        request: function(currentSub) {
-          if(currentSub === sub1) throw new Error();
-          return {
-            end: function() {
-              currentSub.should.equal(sub2);
-              done();
-            }
-          }
-        }
-      });
+      sub1.send = function(data) {
+        throw new Error();
+      };
+
+      sub2.send = function(data) {
+        done();
+      };
+
+      broker.publish('my-event', 'some data');
     });
 
-    it('should remove broken subscriber', function(done) {
-      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST',roundRobin:false};
-      var sub2 = {hostname:'localhost',port:8888,path:'path',method:'GET',roundRobin:false};
-      broker.subscribe('my-event', sub1);
-      broker.subscribe('my-event', sub2);
-
-      broker.publish('my-event', 'some data', {
-        request: function(currentSub) {
-          if(currentSub === sub1) throw new Error();
-        }
-      });
-
-      broker.publish('my-event', 'some data', {
-        request: function(currentSub) {
-          currentSub.should.equal(sub2);
-          done();
-        }
-      });
+    it.skip('should remove broken subscriber', function(done) {
     });
   });
 
   describe('subscribing', function() {
 
     it('should return 200 when everything is ok', function() {
-      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST',roundRobin:false};
+      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST'};
       broker.subscribe('my-event', sub1).should.equal(200);
     });
 
     it.skip('should default to round-robin', function() {
-      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST',roundRobin:false};
+      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST'};
       broker.subscribe('my-event', sub1);
     });
 
     it('should return 500 on repeated subscription', function() {
-      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST',roundRobin:false};
+      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST'};
       broker.subscribe('my-event', sub1);
       broker.subscribe('my-event', sub1).should.equal(500);
     });
 
     it('should return 400 when subscriber\'s hostname is missing', function() {
-      var sub1 = {port:4444,path:'path',method:'POST',roundRobin:false};
+      var sub1 = {port:4444,path:'path',method:'POST'};
       broker.subscribe('my-event', sub1).should.equal(400);
     });
 
     it('should return 400 when subscriber\'s port is missing', function() {
-      var sub1 = {hostname:'localhost',path:'path',method:'POST',roundRobin:false};
+      var sub1 = {hostname:'localhost',path:'path',method:'POST'};
       broker.subscribe('my-event', sub1).should.equal(400);
     });
 
     it('should return 400 when subscriber\'s path is missing', function() {
-      var sub1 = {hostname:'localhost',port:4444,method:'POST',roundRobin:false};
+      var sub1 = {hostname:'localhost',port:4444,method:'POST'};
       broker.subscribe('my-event', sub1).should.equal(400);
     });
 
     it('should return 400 when subscriber\'s method is missing', function() {
-      var sub1 = {hostname:'localhost',port:4444,path:'path',roundRobin:false};
+      var sub1 = {hostname:'localhost',port:4444,path:'path'};
       broker.subscribe('my-event', sub1).should.equal(400);
     });
 
     it('should return 400 when subscriber\'s method is invalid', function() {
-      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'STOP',roundRobin:false};
+      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'STOP'};
       broker.subscribe('my-event', sub1).should.equal(400);
     });
 

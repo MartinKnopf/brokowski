@@ -26,14 +26,14 @@
 var assert = require('assert');
 
 if (process.argv.length != 6) {
-  console.log('usage: remote_thr <bind-to> <message-size> <message-count>')
+  console.log('usage: remote_thr <broker> <event> <message-size> <period in ms>')
   process.exit(1)
 }
 
 var connect_to = process.argv[2]
 var event = process.argv[3]
 var message_size = Number(process.argv[4])
-var message_count = Number(process.argv[5])
+var period = Number(process.argv[5])
 var message = new Buffer(message_size)
 message.fill('h')
 
@@ -43,10 +43,9 @@ var counter = 0
 pub = require('../brokowski').pub(connect_to);
 
 function send(){
-  pub.send(event, message.toString() + i);
+  pub.send(event, message.toString());
   
-  if(i++ < message_count)
-    setTimeout(send, 1000);
+  setTimeout(send, period);
 }
 
 // because of what seems to be a bug in node-zmq, we would lose messages

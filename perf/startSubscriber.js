@@ -27,7 +27,7 @@ var assert = require('assert')
   , sub = require('../brokowski').sub();
 
 if (process.argv.length != 7) {
-  console.log('usage: local_thr <bind-to> <message-size> <message-count>');
+  console.log('usage: local_thr <port> <event> <broker> <message-size> <message-count>');
   process.exit(1);
 }
 
@@ -41,16 +41,19 @@ var timer;
 
 sub.start(port, event, broker);
 
+sub.resubscribe({
+  event: event,
+  method: 'post',
+  handler: function (data) {
+    if (!timer) {
+      console.log('started receiving');
+      timer = process.hrtime();
+    }
 
-sub.post(event, function (data) {
-  if (!timer) {
-    console.log('started receiving');
-    timer = process.hrtime();
+    assert.equal(data.length, message_size);
+    if (++counter === message_count) finish();
   }
-
-  assert.equal(data.length, message_size);
-  if (++counter === message_count) finish();
-})
+});
 
 function finish(){
   var endtime = process.hrtime(timer);

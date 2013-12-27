@@ -26,7 +26,7 @@
 var assert = require('assert');
 
 if (process.argv.length != 6) {
-  console.log('usage: remote_thr <bind-to> <message-size> <message-count>')
+  console.log('usage: remote_thr <bind-to> <event> <message-size> <message-count>')
   process.exit(1)
 }
 
