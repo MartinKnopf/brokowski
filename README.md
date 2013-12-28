@@ -70,7 +70,7 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
   Subscription options:
   
-| mandatory option | description                                                                                              | example                                                      |
+|                  | description                                                                                              | example                                                      |
 | :--------------- | :------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
 | event            | subscribed event                                                                                         | ```'my-event'```                                             |
 | hostname         | subscriber host (default: ```'localhost'```)                                                             | ```'192.168.0.77'```                                         |
