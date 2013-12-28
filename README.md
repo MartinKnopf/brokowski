@@ -1,4 +1,4 @@
-brokowski [![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski) [![unstable](http://hughsk.github.io/stability-badges/dist/unstable.svg)](http://github.com/hughsk/stability-badges)
+brokowski [![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski) [![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
 ===========
  
 Brokered RESTful publish/subscribe: Broker, publisher and subscriber talking via RESTful interfaces.
@@ -8,7 +8,7 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
 ## Installation
 
-  Node.js >=0.10 is required
+  Node.js ~0.10 is required
 
     $ npm install brokowski
 
