@@ -148,7 +148,6 @@ describe('[testSubscriber.js] Subscriber', function() {
         assert.equal(body.hostname, 'localhost');
         assert.equal(body.port, 6018);
         assert.equal(body.path, '/myservice/myevent');
-        assert.equal(body.roundRobin, true);
         done();
       });
     });

@@ -1,10 +1,10 @@
 brokowski [![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski) [![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
 ===========
  
-Brokered RESTful publish/subscribe: Broker, publisher and subscriber talking via RESTful interfaces.
+RESTful publish/subscribe broker (and publisher and subscriber).
 
 Brokowski has a RESTful pub/sub broker, which runs as a HTTP server. It receives subscriptions and events via a RESTful API. The events will be forwarded to the connected subscriber services.
-Brokowski also includes publisher and subcriber modules, which offer simple APIs for the event handling. They take care of setting up HTTP servers, connecting to the broker and sending/receiving events via the broker's RESTful API, making it easy to include pub/sub event handling into your apps. But since the broker runs on HTTP you can connect your own services via HTTP, too.
+Brokowski also includes publisher and subcriber modules, which offer simple APIs for RESTful event handling. They take care of setting up HTTP servers, connecting to the broker and sending/receiving events via the broker's RESTful API, making it easy to include pub/sub event handling into your apps. But since the broker runs on HTTP you can connect your own services via HTTP, too.
 
 ## Installation
 
@@ -14,32 +14,39 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
 ## API
 
-  broker.js:
+  broker:
   ```js
-  var brokowski = require('brokowski').broker().start(6000); // starts broker at http://192.168.0.1:6000
+  // starts one broker at http://192.168.0.1:6000
+  var brokowski = require('brokowski').brokowskiServer().start(6000);
+
+  // starts a cluster of brokers at http://192.168.0.1:6000 (one server on each CPU core)
+  var brokowski = require('brokowski').brokowskiCluster().start(6000);
   ```
 
-  subscriber.js:
+  subscriber:
   ```js
   // starts subscriber at http://192.168.0.2:6002/mysubscriber
   var sub = require('brokowski').sub().start(6002, 'mysubscriber', 'http://192.168.0.1:6000');
 
   sub
-    .get('my-event', function(data) {
+    .get('my-event', function(data) { // resubscribing
       if(data.coolstuff) console.log('GET my-event');
     })
-    .post('my-event', function(data) {
+    .post('my-event', function(data) { // resubscribing
       if(data.coolstuff) console.log('POST my-event');
     })
-    .put('my-event', function(data) {
+    .put('my-event', function(data) { // resubscribing
       if(data.coolstuff) console.log('PUT my-event');
     })
-    .delete('my-event', function(data) {
+    .delete('my-event', function(data) { // resubscribing
       if(data.coolstuff) console.log('DELETE my-event');
     })
     .subscribe({
       event: 'my-other-event',
-      method: 'GET',
+      method: 'GET',             /* or 'POST' or 'PUT' or 'DELETE' */
+      hostname: '192.168.0.100', /* default: 'localhost' */
+      port: 6000,                /* default: port provided to sub.start() */
+      path: 'my-service',        /* default: '/service-name/method/event' */
       handler: function(data) {
         console.log('GET my-other-event');
       }
@@ -60,7 +67,7 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
     });
   ```
 
-  publisher.js:
+  publisher:
   ```js
   var pub = require('brokowski').pub('http://192.168.0.1:6000');
   pub.send('my-event', {coolstuff: true});
@@ -68,33 +75,32 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
 ## RESTful API of the broker
 
-  Subscription options:
-  
-|                  | description                                                                                              | example                                                      |
-| :--------------- | :------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- |
-| event            | subscribed event                                                                                         | ```'my-event'```                                             |
-| hostname         | subscriber host (default: ```'localhost'```)                                                             | ```'192.168.0.77'```                                         |
-| port             | subscriber port (default: port provided to ```sub.start()```)                                            | ```1234```                                                   |
-| path             | subscriber uri path (default: service name, event: ```/myservice/GET/myevent```)                         | ```'/myservice/subscriptions'```                             |
-| method           | HTTP method                                                                                              | ```'GET'``` or ```'POST'``` or ```'PUT'``` or ```'DELETE'``` |
+  Subscription parameters:
 
-  **The default options are only used in** ```sub.subscribe()```, ```sub.resubscribe()```, ```sub.unsubscribe()```
+  ```js
+  {
+    method: 'GET', /* or 'POST' or 'PUT' or 'DELETE' */
+    hostname: '192.168.0.100' ,
+    port: 6000,
+    path: 'subscriber-path'
+  }
+  ```
 
 ### subscribe
 
   * method: POST
   * url: ```http://localhost:6000/subscribe/myevent```
-  * json: see the options
+  * json: see the parameters
   * returns 200 if everything is ok
   * returns 400 if json is incomplete
-  * returns 500 if subscriber url already subscribed to event
+  * returns 500 if subscriber was subscribed to event
 
 ### resubscribe
 
   All subscribers (partially) matching the given json will be removed before the new subscription.
   * method: POST
   * url: ```http://localhost:6000/resubscribe/myevent```
-  * json: see the options
+  * json: see the parameters
   * returns 200 if everything is ok
   * returns 400 if json is incomplete
 
@@ -103,8 +109,9 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
   All subscribers (partially) matching the given json will be removed.
   * method: POST
   * url: ```http://localhost:6000/unsubscribe/myevent```
-  * json: see the options
+  * json: see the parameters
   * returns 200 if everything is ok
+  * returns 500 if subscriber wasn't already subscribed to event
 
 ### publish
 
@@ -119,7 +126,7 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
   * url: ```http://localhost:6000/monitoring/alive```
   * should return ```200```
 
-## Performance (0.1.1)
+## Performance (0.1.2)
 
   For the performance tests I used most of the test code from [node-zmq](https://github.com/JustinTulloss/zeromq.node).
 
@@ -132,23 +139,21 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
 ### Tests with single subscriber:
 
-|                 | **10.000  messages** | **100.000 messages** |
-| --------------: |:--------------------:| :-------------------:|
-|      **2 Byte** | 3568 [msg/s]         | 3658 [msg/s]         |
-|     **64 Byte** | 3556 [msg/s]         | 3585 [msg/s]         |
-|   **3072 Byte** | 3118 [msg/s]         | 3043 [msg/s]         |
-| **64.000 Byte** | 1187 [msg/s]         | publisher process ran out of memory |
+|                 | **10.000  messages**                | **100.000 messages** |
+| --------------: |:-----------------------------------:| :-------------------:|
+|      **2 Byte** | 3951 [msg/s]                        | 4027 [msg/s]         |
+|     **64 Byte** | 3841 [msg/s]                        | 3931 [msg/s]         |
+|   **3072 Byte** | 3326 [msg/s]                        | 3043 [msg/s]         |
 
 ### Tests with two subscribers listening to the same event:
 
   The results were almost the same for both the subscribers, so I just documented the worst.
 
-|                 | **10.000  messages** | **100.000 messages** |
-| --------------: |:--------------------:| :-------------------:|
-|      **2 Byte** | 2541 [msg/s]         | 2317 [msg/s]         |
-|     **64 Byte** | 2501 [msg/s]         | 2422 [msg/s]         |
-|   **3072 Byte** | 2213 [msg/s]         | 2119 [msg/s]         |
-| **64.000 Byte** | 528 [msg/s]          | publisher process ran out of memory |
+|                 | **10.000  messages**                | **100.000 messages** |
+| --------------: |:-----------------------------------:| :-------------------:|
+|      **2 Byte** | 2774 [msg/s]                        | 2858 [msg/s]         |
+|     **64 Byte** | 2707 [msg/s]                        | 2759 [msg/s]         |
+|   **3072 Byte** | 2304 [msg/s]                        | 2327 [msg/s]         |
 
   You can test the performance yourself:
 
@@ -160,16 +165,14 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
     $ cd perf
 
     # connect as many subscribers as you like
-    $ node startSubscriber.js 6000 my-event http://localhost:3000 64000 10000
+    $ node startSubscriber.js 6000 my-event http://localhost:3000 4096 10000
     
-    # start publishing 10000 events with a msg size of 64000 byte
-    $ node startPublisher.js http://localhost:3000 my-event 64000 10000 
+    # start publishing 10000 events with a msg size of 4096 byte
+    $ node startPublisher.js http://localhost:3000 my-event 4096 10000 
 
 ## TODO
 
-  * not failing due to broken subscribers
   * removing broken subscribers
-  * unsubscribing, resubscribing
   * automatic subscriptions clean up
   * parallelizing
   * broker config options

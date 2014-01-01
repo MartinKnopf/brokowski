@@ -70,7 +70,7 @@ SubscriberServer.prototype.start = function(port, name, broker) {
 
   // run server
   this.restServer = http.createServer(this.app).listen(this.app.get('port'), function() {
-    console.log('subscriber server \'' + self.name + '\' listening on port ' + self.app.get('port'));
+    console.log('subscriber \'' + self.name + '\' listening on port ' + self.app.get('port'));
   });
   return this;
 };
@@ -115,8 +115,7 @@ SubscriberServer.prototype.subscribe = function(options) {
       hostname: options.hostname || 'localhost',
       port: options.port || this.app.get('port'),
       path: options.path || '/' + this.name + '/' + options.event,
-      method: options.method,
-      roundRobin: options.roundRobin || true
+      method: options.method
     }
   }, function(err, res) {
     if(!res)
@@ -138,8 +137,7 @@ SubscriberServer.prototype.resubscribe = function(options) {
       hostname: options.hostname || 'localhost',
       port: options.port || this.app.get('port'),
       path: options.path || '/' + this.name + '/' + options.event,
-      method: options.method,
-      roundRobin: options.roundRobin || true
+      method: options.method
     }
   }, function(err, res) {
     if(!res)
