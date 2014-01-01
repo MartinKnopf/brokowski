@@ -1,7 +1,7 @@
 brokowski [![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski) [![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
 ===========
  
-RESTful publish/subscribe broker (and publisher and subscriber).
+RESTful publish/subscribe broker (and publisher and subscriber)
 
 Brokowski has a RESTful pub/sub broker, which runs as a HTTP server. It receives subscriptions and events via a RESTful API. The events will be forwarded to the connected subscriber services.
 Brokowski also includes publisher and subcriber modules, which offer simple APIs for RESTful event handling. They take care of setting up HTTP servers, connecting to the broker and sending/receiving events via the broker's RESTful API, making it easy to include pub/sub event handling into your apps. But since the broker runs on HTTP you can connect your own services via HTTP, too.
