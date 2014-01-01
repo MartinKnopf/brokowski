@@ -18,13 +18,12 @@ function BrokowskiServer() {}
 
 
 /**
- * Start HTTP server.
+ * Starts the HTTP server.
  */
 BrokowskiServer.prototype.start = function(port) {
   var self = this;
-
-  http.createServer(function(req, res) {
-
+  
+  this.server = http.createServer(function(req, res) {
     if (toobusy()) {
       res.writeHead(503, 'Server is too busy.');
       res.end();
@@ -37,8 +36,11 @@ BrokowskiServer.prototype.start = function(port) {
       console.log(e);
       res.statusCode = 500;
     }
+  });
 
-  }).listen(port || 3000);
+  this.server.listen(port || 3000, function() {
+    console.log('starting brokowski server ' + JSON.stringify({pid: process.pid, port: port || 3000}));
+  });
 }
 
 

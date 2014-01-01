@@ -1,1 +1,1 @@
-require('./brokowski').broker().start(process.env.PORT);
+require('./brokowski').brokowskiCluster().start(process.env.PORT);
