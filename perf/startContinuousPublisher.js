@@ -34,17 +34,17 @@ var connect_to = process.argv[2]
 var event = process.argv[3]
 var message_size = Number(process.argv[4])
 var period = Number(process.argv[5])
-var message = new Buffer(message_size)
-message.fill('h')
+var message = new Buffer(message_size);
+message.fill('h');
+message = message.toString();
 
 var counter = 0
   , i = 0;
 
 pub = require('../brokowski').pub(connect_to);
 
-function send(){
-  pub.send(event, message.toString());
-  
+function send() {
+  pub.send(event, message);
   setTimeout(send, period);
 }
 

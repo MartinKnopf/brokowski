@@ -1,8 +1,8 @@
 {
   "name": "brokowski",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "author": "Horsed",
-  "description": "Brokered RESTful publish/subscribe: Broker, publisher and subscriber talking via RESTful interfaces.",
+  "description": "RESTful publish/subscribe broker (and publisher and subscriber)",
   "private": false,
   "scripts": {
     "start": "node startBroker",
@@ -28,7 +28,8 @@
     "request": "~2.27.0",
     "lodash": "~2.4.1",
     "toobusy": "~0.2.4",
-    "rr": "0.0.1"
+    "rr": "0.0.1",
+    "eventemitter2": "~0.4.13"
   },
   "devDependencies": {
     "body": "~4.4.2",
