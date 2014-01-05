@@ -2,7 +2,6 @@ var util = require('util')
   , http = require('http')
   , domain = require('domain')
   , _ = require('lodash')
-  , rr = require('./rr')
   , EventEmitter = require('eventemitter2').EventEmitter2;
 
 
