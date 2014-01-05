@@ -1,5 +1,5 @@
 brokowski [![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski) [![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
-============
+===========
  
 RESTful publish/subscribe broker (and publisher and subscriber)
 
