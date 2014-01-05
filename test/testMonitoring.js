@@ -1,6 +1,6 @@
 var assert = require('assert')
   , should = require('should')
-  , monitoring = require('../rest/monitoring');
+  , monitoring = require('../lib/monitoring');
 
 describe('Monitoring', function() {
 

@@ -2,21 +2,20 @@ var assert = require('assert')
   , should = require('should')
   , _ = require('lodash')
   , http = require('http')
-  , broker = require('../rest/broker.js')();
+  , broker = require('../lib/broker.js')();
 
-function HttpMock(done) {
-  this.done = done;
+function HttpMock(onEnd) {
+  this.onEnd = onEnd;
 }
 HttpMock.prototype.request = function(actualSub) {
   this.actualSub = actualSub;
   return this;
 }
 HttpMock.prototype.on = function(event, cb) {
-  cb();
   return this;
 }
 HttpMock.prototype.end = function(actualData) {
-  this.done(this.actualSub, actualData);
+  this.onEnd(this.actualSub, actualData);
   return this;
 }
 
@@ -81,7 +80,7 @@ describe('[testBroker.js] Broker:', function() {
 
       broker.publish('my-event', 'some data', new HttpMock(function(actualSub) {
         subs.push(actualSub);
-        if(_.isEqual(actualSub, sub1)) http.request(sub1).end(); // causes error
+        if(_.isEqual(actualSub, sub1)) throw new Error(); // causes error
         else if(subs.length === 2) done();
       }));
     });
