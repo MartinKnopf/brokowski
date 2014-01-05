@@ -1,12 +1,12 @@
 exports.brokowskiServer = function() {
-  return require('./rest/brokowskiServer').broker();
+  return require('./lib/brokowskiServer').broker();
 }
 exports.brokowskiCluster = function() {
-  return require('./rest/brokowskiCluster').broker();
+  return require('./lib/brokowskiCluster').broker();
 }
 exports.pub = function(broker) {
-  return require('./rest/publisher').pub(broker);
+  return require('./lib/publisher').pub(broker);
 }
 exports.sub = function() {
-  return require('./rest/subscriber').sub();
+  return require('./lib/subscriber').sub();
 }

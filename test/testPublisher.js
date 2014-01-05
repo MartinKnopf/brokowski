@@ -23,7 +23,7 @@ describe('Publisher', function() {
 
     http.createServer(broker).listen(4001);
 
-    publisher = require('../rest/publisher.js').pub('http://localhost:4001');
+    publisher = require('../lib/publisher.js').pub('http://127.0.0.1:4001');
 
     publisher.send('myevent', {testdata: true});
   });
@@ -38,7 +38,7 @@ describe('Publisher', function() {
 
     http.createServer(broker).listen(4002);
 
-    publisher = require('../rest/publisher.js').pub('http://localhost:4002/');
+    publisher = require('../lib/publisher.js').pub('http://127.0.0.1:4002/');
 
     publisher.send('myevent', {testdata: true});
   });
