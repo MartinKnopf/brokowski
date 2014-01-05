@@ -27,7 +27,6 @@
     "express": "~3.3.4",
     "request": "~2.27.0",
     "lodash": "~2.4.1",
-    "toobusy": "~0.2.4",
     "rr": "0.1.0",
     "eventemitter2": "~0.4.13"
   },
