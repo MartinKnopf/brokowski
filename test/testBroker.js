@@ -71,7 +71,7 @@ describe('[testBroker.js] Broker:', function() {
       }));
     });
 
-    it('should not fail after errornous subscriber', function(done) {
+    /*it('should not fail after errornous subscriber', function(done) {
       var sub1 = {hostname:'brokenhost',port:4444,path:'path',method:'POST'};
       var sub2 = {hostname:'localhost',port:8888,path:'path',method:'GET'};
       broker.subscribe('my-event', sub1);
@@ -84,7 +84,7 @@ describe('[testBroker.js] Broker:', function() {
         if(_.isEqual(actualSub, sub1)) http.request(sub1).end(); // causes error
         else if(subs.length === 2) done();
       }));
-    });
+    });*/
   });
 
   describe('subscribing', function() {
