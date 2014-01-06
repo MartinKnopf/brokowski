@@ -27,6 +27,7 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {
       jsonBody(req, res, function(err, body) {
         assert.equal(body.method, 'GET');
+        assert.ok(req.url.indexOf('resubscribe') != -1);
         done();
       });
     });
@@ -42,6 +43,7 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {
       jsonBody(req, res, function(err, body) {
         assert.equal(body.method, 'POST');
+        assert.ok(req.url.indexOf('resubscribe') != -1);
         done();
       });
     });
@@ -57,6 +59,7 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {
       jsonBody(req, res, function(err, body) {
         assert.equal(body.method, 'PUT');
+        assert.ok(req.url.indexOf('resubscribe') != -1);
         done();
       });
     });
@@ -72,6 +75,7 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {
       jsonBody(req, res, function(err, body) {
         assert.equal(body.method, 'DELETE');
+        assert.ok(req.url.indexOf('resubscribe') != -1);
         done();
       });
     });

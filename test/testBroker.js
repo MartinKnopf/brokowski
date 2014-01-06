@@ -6,17 +6,22 @@ var assert = require('assert')
 
 function HttpMock(onEnd) {
   this.onEnd = onEnd;
+  this.notifiedSubs = [];
 }
 HttpMock.prototype.request = function(actualSub) {
   this.actualSub = actualSub;
+  this.notifiedSubs.push(actualSub);
   return this;
 }
 HttpMock.prototype.on = function(event, cb) {
   return this;
 }
 HttpMock.prototype.end = function(actualData) {
-  this.onEnd(this.actualSub, actualData);
+  if(this.onEnd) this.onEnd(this.actualSub, actualData);
   return this;
+}
+HttpMock.prototype.getNotifiedSubs = function() {
+  return this.notifiedSubs;
 }
 
 describe('[testBroker.js] Broker:', function() {
@@ -70,7 +75,7 @@ describe('[testBroker.js] Broker:', function() {
       }));
     });
 
-    it('should not fail after errornous subscriber', function(done) {
+    it('should not fail after erroneous subscriber', function(done) {
       var sub1 = {hostname:'brokenhost',port:4444,path:'path',method:'POST'};
       var sub2 = {hostname:'localhost',port:8888,path:'path',method:'GET'};
       broker.subscribe('my-event', sub1);
@@ -80,9 +85,37 @@ describe('[testBroker.js] Broker:', function() {
 
       broker.publish('my-event', 'some data', new HttpMock(function(actualSub) {
         subs.push(actualSub);
-        if(_.isEqual(actualSub, sub1)) throw new Error(); // causes error
+        if(_.isEqual(actualSub, sub1)) throw new Error();
         else if(subs.length === 2) done();
       }));
+    });
+
+    it('should remove erroneous subscriber', function() {
+      var sub1 = {hostname:'brokenhost',port:4444,path:'path',method:'POST'};
+      var sub2 = {hostname:'localhost',port:8888,path:'path',method:'GET'};
+      broker.subscribe('my-event', sub1);
+      broker.subscribe('my-event', sub2);
+
+      broker.publish('my-event', 'some data', new HttpMock(function(actualSub) {
+        if(_.isEqual(actualSub, sub1)) throw new Error();
+      }));
+
+      var httpMock = new HttpMock();
+      broker.publish('my-event', 'some data', httpMock);
+
+      httpMock.getNotifiedSubs().length.should.equal(1);
+    });
+
+    it('should clear subscriptions', function() {
+      var sub1 = {hostname:'localhost',port:8888,path:'path',method:'GET'};
+      broker.subscribe('my-event', sub1);
+
+      broker.clear();
+
+      var httpMock = new HttpMock();
+      broker.publish('my-event', 'some data', httpMock);
+
+      httpMock.getNotifiedSubs().length.should.equal(0);
     });
   });
 
@@ -132,6 +165,17 @@ describe('[testBroker.js] Broker:', function() {
       broker.subscribe('my-event', sub1);
       broker.unsubscribe('my-event', sub1).should.equal(200);
     });
+
+    it('should not notify unsubscribed subscriber again', function() {
+      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST'};
+      broker.subscribe('my-event', sub1);
+      broker.unsubscribe('my-event', sub1);
+
+      var httpMock = new HttpMock();
+      broker.publish('my-event', 'some data', httpMock);
+
+      httpMock.getNotifiedSubs().length.should.equal(0);
+    });
   });
 
   describe('resubscribing', function() {
@@ -141,6 +185,17 @@ describe('[testBroker.js] Broker:', function() {
       broker.subscribe('my-event', sub1);
 
       broker.resubscribe('my-event', sub1).should.equal(200);
+    });
+
+    it('should notify resubscribed subscriber only once', function() {
+      var sub1 = {hostname:'localhost',port:4444,path:'path',method:'POST'};
+      broker.subscribe('my-event', sub1);
+      broker.resubscribe('my-event', sub1);
+
+      var httpMock = new HttpMock();
+      broker.publish('my-event', 'some data', httpMock);
+
+      httpMock.getNotifiedSubs().length.should.equal(1);
     });
   });
 });

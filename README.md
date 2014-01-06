@@ -4,7 +4,7 @@ brokowski [![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](h
 RESTful publish/subscribe broker (and publisher and subscriber)
 
 Brokowski has a RESTful pub/sub broker, which runs as a HTTP server. It receives subscriptions and events via a RESTful API. The events will be forwarded to the connected subscriber services.
-Brokowski also includes publisher and subcriber modules, which offer simple APIs for RESTful event handling. They take care of setting up HTTP servers, connecting to the broker and sending/receiving events via the broker's RESTful API, making it easy to include pub/sub event handling into your apps. But since the broker runs on HTTP you can connect your own services via HTTP, too.
+Brokowski also includes publisher and subcriber modules, which offer simple APIs for RESTful event handling. They take care of setting up HTTP servers, connecting to the broker and sending/receiving events via the broker's RESTful API, making it easy to include pub/sub event handling into your apps. And since the broker runs on HTTP you can connect your own services via HTTP, too.
 
 ## Installation
 
@@ -97,7 +97,7 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
 ### resubscribe
 
-  All subscribers (partially) matching the given json will be removed before the new subscription.
+  All subscribers matching the given json will be removed before the new subscription.
   * method: POST
   * url: ```http://localhost:6000/resubscribe/myevent```
   * json: see the parameters
@@ -106,7 +106,7 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
 ### unsubscribe
 
-  All subscribers (partially) matching the given json will be removed.
+  All subscribers matching the given json will be removed.
   * method: POST
   * url: ```http://localhost:6000/unsubscribe/myevent```
   * json: see the parameters
@@ -119,6 +119,13 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
   * url: ```http://localhost:6000/publish/myevent```
   * json: any
   * returns 200 if everything is ok
+
+### clear
+
+  Removes all subscriptions.
+  * method: GET
+  * url: ```http://localhost:6000/clear```
+  * should return ```200```
 
 ### monitoring
 
@@ -170,9 +177,12 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
     # start publishing 10000 events with a msg size of 4096 byte
     $ node startPublisher.js http://localhost:3000 my-event 4096 10000 
 
+## Known errors
+
+  * Brokowski does remove broken subscribers, but in the current version (0.1.2) it doesn't do this reliably under big load (like the performance tests). That's because incoming http requests can block the handling of errors based on broken subscribers.
+
 ## TODO
 
-  * removing broken subscribers
   * automatic subscriptions clean up
   * parallelizing
   * broker config options
