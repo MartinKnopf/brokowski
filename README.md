@@ -17,16 +17,29 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
   broker:
   ```js
   // starts one broker at http://192.168.0.1:6000
-  var brokowski = require('brokowski').brokowskiServer().start(6000);
+  var brokowski = require('brokowski').brokowskiServer({
+    port: 6000,     // default: 3000
+    subscribers: [{
+      event: 'my-event',
+      method: 'GET',
+      hostname: '192.168.0.100',
+      port: 6002,
+      path: 'my-service'
+    }]
+  }).start();
 
   // starts a cluster of brokers at http://192.168.0.1:6000 (one server on each CPU core)
-  var brokowski = require('brokowski').brokowskiCluster().start(6000);
+  var brokowski = require('brokowski').brokowskiCluster({port: 6000}).start();
   ```
 
   subscriber:
   ```js
-  // starts subscriber at http://192.168.0.2:6002/mysubscriber
-  var sub = require('brokowski').sub().start(6002, 'mysubscriber', 'http://192.168.0.1:6000');
+  // starts subscriber at http://localhost:6002/mysubscriber
+  var sub = require('brokowski').sub({
+    port: 6002                        // optional, default: 3000
+    name: 'mysubscriber',             // mandatory
+    broker: 'http://192.168.0.1:6000' // mandatory
+  }).start();
 
   sub
     .get('my-event', function(data) { // resubscribing
@@ -45,7 +58,7 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
       event: 'my-other-event',
       method: 'GET',             /* or 'POST' or 'PUT' or 'DELETE' */
       hostname: '192.168.0.100', /* default: 'localhost' */
-      port: 6000,                /* default: port provided to sub.start() */
+      port: 6002,                /* default: port provided to sub(options) */
       path: 'my-service',        /* default: '/service-name/method/event' */
       handler: function(data) {
         console.log('GET my-other-event');
@@ -69,7 +82,7 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
   publisher:
   ```js
-  var pub = require('brokowski').pub('http://192.168.0.1:6000');
+  var pub = require('brokowski').pub({broker: 'http://192.168.0.1:6000'});
   pub.send('my-event', {coolstuff: true});
   ```
 
@@ -183,7 +196,9 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
 ## TODO
 
+  * tests for brokowskiServer
   * automatic subscriptions clean up
+  * intelligent subscribers (like auto connecting zeromq sockets)
   * parallelizing
   * broker config options
   * HTTPS

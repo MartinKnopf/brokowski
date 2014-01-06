@@ -23,8 +23,7 @@
   * THE SOFTWARE.
   */
 
-var assert = require('assert')
-  , sub = require('../brokowski').sub();
+var assert = require('assert');
 
 if (process.argv.length != 7) {
   console.log('usage: local_thr <port> <event> <broker> <message-size> <message-count>');
@@ -39,7 +38,12 @@ var message_count = Number(process.argv[6]);
 var counter = 0;
 var timer;
 
-sub.start(port, event, broker);
+var sub = require('../brokowski').sub({
+  port: port,
+  name: event,
+  broker: broker
+})
+.start();
 
 sub.resubscribe({
   event: event,
