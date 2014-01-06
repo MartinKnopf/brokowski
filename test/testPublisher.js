@@ -8,6 +8,14 @@ var assert = require('assert')
 
 describe('Publisher', function() {
 
+  it('should fail when no broker provided', function(done) {
+    try {
+      publisher = require('../lib/publisher.js').pub();
+    } catch(e) {
+      done();
+    }
+  });
+
   it('should send message to broker', function(done) {
     broker = connect().use(function(req, res) {
 
@@ -23,7 +31,7 @@ describe('Publisher', function() {
 
     http.createServer(broker).listen(4001);
 
-    publisher = require('../lib/publisher.js').pub('http://127.0.0.1:4001');
+    publisher = require('../lib/publisher.js').pub({broker: 'http://127.0.0.1:4001'});
 
     publisher.send('myevent', {testdata: true});
   });
@@ -38,7 +46,7 @@ describe('Publisher', function() {
 
     http.createServer(broker).listen(4002);
 
-    publisher = require('../lib/publisher.js').pub('http://127.0.0.1:4002/');
+    publisher = require('../lib/publisher.js').pub({broker: 'http://127.0.0.1:4002/'});
 
     publisher.send('myevent', {testdata: true});
   });

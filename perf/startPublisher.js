@@ -26,7 +26,7 @@
 var assert = require('assert');
 
 if (process.argv.length != 6) {
-  console.log('usage: remote_thr <bind-to> <event> <message-size> <message-count>')
+  console.log('usage: remote_thr <broker> <event> <message-size> <message-count>')
   process.exit(1)
 }
 
@@ -41,7 +41,7 @@ message = message.toString();
 var counter = 0
   , i = 0;
 
-pub = require('../brokowski').pub(connect_to);
+pub = require('../brokowski').pub({broker: connect_to});
 
 function send(){
   for (; i < message_count; i++) {

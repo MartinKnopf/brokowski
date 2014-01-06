@@ -7,6 +7,28 @@ var assert = require('assert')
 
 describe('[testSubscriber.js] Subscriber', function() {
 
+  it('should fail when no name provided', function(done) {
+    try {
+      var subscriber = require('../lib/subscriber.js').sub({
+        port: 6000,
+        broker: 'http://127.0.0.1:5999'
+      })
+    } catch(e) {
+      done();
+    }
+  });
+
+  it('should fail when no name provided', function(done) {
+    try {
+      var subscriber = require('../lib/subscriber.js').sub({
+        port: 6000,
+        name: 'myservice'
+      })
+    } catch(e) {
+      done();
+    }
+  });
+
   it('should subscribe at broker', function(done) {
     var broker = connect().use(function(req, res) {
       req.url.should.equal('/subscribe/myevent');
@@ -15,7 +37,11 @@ describe('[testSubscriber.js] Subscriber', function() {
 
     http.createServer(broker).listen(5999);
 
-    var subscriber = require('../lib/subscriber.js').sub().start(6000, 'myservice', 'http://127.0.0.1:5999')
+    var subscriber = require('../lib/subscriber.js').sub({
+      port: 6000,
+      name: 'myservice',
+      broker: 'http://127.0.0.1:5999'
+    }).start()
 
     subscriber.subscribe({
       event: 'myevent',
@@ -27,13 +53,18 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {
       jsonBody(req, res, function(err, body) {
         assert.equal(body.method, 'GET');
+        assert.ok(req.url.indexOf('resubscribe') != -1);
         done();
       });
     });
 
     http.createServer(broker).listen(6001);
 
-    var subscriber = require('../lib/subscriber.js').sub().start(6002, 'myservice', 'http://127.0.0.1:6001')
+    var subscriber = require('../lib/subscriber.js').sub({
+      port: 6002,
+      name: 'myservice',
+      broker: 'http://127.0.0.1:6001'
+    }).start()
 
     subscriber.get('myevent', function() { /*empty handler*/ });
   });
@@ -42,13 +73,18 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {
       jsonBody(req, res, function(err, body) {
         assert.equal(body.method, 'POST');
+        assert.ok(req.url.indexOf('resubscribe') != -1);
         done();
       });
     });
 
     http.createServer(broker).listen(6003);
 
-    var subscriber = require('../lib/subscriber.js').sub().start(6004, 'myservice', 'http://127.0.0.1:6003')
+    var subscriber = require('../lib/subscriber.js').sub({
+      port: 6004,
+      name: 'myservice',
+      broker: 'http://127.0.0.1:6003'
+    }).start()
 
     subscriber.post('myevent', function() { /*empty handler*/ });
   });
@@ -57,13 +93,18 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {
       jsonBody(req, res, function(err, body) {
         assert.equal(body.method, 'PUT');
+        assert.ok(req.url.indexOf('resubscribe') != -1);
         done();
       });
     });
 
     http.createServer(broker).listen(6005);
 
-    var subscriber = require('../lib/subscriber.js').sub().start(6006, 'myservice', 'http://127.0.0.1:6005')
+    var subscriber = require('../lib/subscriber.js').sub({
+      port: 6006,
+      name: 'myservice',
+      broker: 'http://127.0.0.1:6005'
+    }).start()
 
     subscriber.put('myevent', function() { /*empty handler*/ });
   });
@@ -72,13 +113,18 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {
       jsonBody(req, res, function(err, body) {
         assert.equal(body.method, 'DELETE');
+        assert.ok(req.url.indexOf('resubscribe') != -1);
         done();
       });
     });
 
     http.createServer(broker).listen(6007);
 
-    var subscriber = require('../lib/subscriber.js').sub().start(6008, 'myservice', 'http://127.0.0.1:6007')
+    var subscriber = require('../lib/subscriber.js').sub({
+      port: 6008,
+      name: 'myservice',
+      broker: 'http://127.0.0.1:6007'
+    }).start()
 
     subscriber.delete('myevent', function() { /*empty handler*/ });
   });
@@ -87,7 +133,11 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {});
     http.createServer(broker).listen(6009);
 
-    var subscriber = require('../lib/subscriber.js').sub().start(6010, 'myservice', 'http://127.0.0.1:6009')
+    var subscriber = require('../lib/subscriber.js').sub({
+      port: 6010,
+      name: 'myservice',
+      broker: 'http://127.0.0.1:6009'
+    }).start()
     subscriber.get('myevent', function(data) {
       assert.ok(data.stuff);
       done();
@@ -102,7 +152,11 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {});
     http.createServer(broker).listen(6011);
 
-    var subscriber = require('../lib/subscriber.js').sub().start(6012, 'myservice', 'http://127.0.0.1:6011')
+    var subscriber = require('../lib/subscriber.js').sub({
+      port: 6012,
+      name: 'myservice',
+      broker: 'http://127.0.0.1:6011'
+    }).start()
     subscriber.post('myevent', function(data) {
       assert.ok(data.stuff);
       done();
@@ -117,7 +171,11 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {});
     http.createServer(broker).listen(6013);
 
-    var subscriber = require('../lib/subscriber.js').sub().start(6014, 'myservice', 'http://127.0.0.1:6013')
+    var subscriber = require('../lib/subscriber.js').sub({
+      port: 6014,
+      name: 'myservice',
+      broker: 'http://127.0.0.1:6013'
+    }).start()
     subscriber.put('myevent', function(data) {
       assert.ok(data.stuff);
       done();
@@ -131,7 +189,11 @@ describe('[testSubscriber.js] Subscriber', function() {
   it('should handle DELETE event and response 200', function(done) {
     http.createServer(connect().use(function(req, res) {})).listen(6015);
 
-    var subscriber = require('../lib/subscriber.js').sub().start(6016, 'myservice', 'http://127.0.0.1:6015')
+    var subscriber = require('../lib/subscriber.js').sub({
+      port: 6016,
+      name: 'myservice',
+      broker: 'http://127.0.0.1:6015'
+    }).start()
     subscriber.delete('myevent', function(data) {
       assert.ok(data.stuff);
       done();
@@ -154,7 +216,11 @@ describe('[testSubscriber.js] Subscriber', function() {
 
     http.createServer(broker).listen(6017);
 
-    var subscriber = require('../lib/subscriber.js').sub().start(6018, 'myservice', 'http://127.0.0.1:6017')
+    var subscriber = require('../lib/subscriber.js').sub({
+      port: 6018,
+      name: 'myservice',
+      broker: 'http://127.0.0.1:6017'
+    }).start()
 
     subscriber.delete('myevent', function() { /*empty handler*/ });
   });
