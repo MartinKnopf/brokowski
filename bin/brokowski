@@ -1,0 +1,23 @@
+#!/usr/bin/env node
+
+var app = require('commander');
+
+app
+  .version(require('../package.json').version);
+
+app
+  .command('server <port>')
+  .description('starts a single brokowski server at the given port (e.g. brokowski server 6000)')
+  .action(function(port) {
+    var Brokowski = require('../index').BrokowskiServer
+      , brokowski = new Brokowski({port: port}).start();
+  });
+app
+  .command('cluster <port>')
+  .description('starts a brokowski cluster at the given port (e.g. brokowski cluster 6000)')
+  .action(function(port) {
+    var Brokowski = require('../index').BrokowskiCluster
+      , brokowski = new Brokowski({port: port}).start();
+  });
+
+app.parse(process.argv);

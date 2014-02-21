@@ -6,40 +6,45 @@ RESTful publish/subscribe broker (and publisher and subscriber)
 Brokowski has a RESTful pub/sub broker, which runs as a HTTP server. It receives subscriptions and events via a RESTful API. The events will be forwarded to the connected subscriber services.
 Brokowski also includes publisher and subcriber modules, which offer simple APIs for RESTful event handling. They take care of setting up HTTP servers, connecting to the broker and sending/receiving events via the broker's RESTful API, making it easy to include pub/sub event handling into your apps. And since the broker runs on HTTP you can connect your own services via HTTP, too.
 
-## Installation
+## Installation and usage
 
   Node.js ~0.10 is required
 
     $ npm install brokowski
+    $ brokowski server 6000
+    $ brokowski cluster 6000
 
 ## API
 
   broker:
   ```js
   // starts one broker at http://192.168.0.1:6000
-  var brokowski = require('brokowski').brokowskiServer({
-    port: 6000,     // default: 3000
-    subscribers: [{
-      event: 'my-event',
-      method: 'GET',
-      hostname: '192.168.0.100',
-      port: 6002,
-      path: 'my-service'
-    }]
-  }).start();
+  var Brokowski = require('brokowski').BrokowskiServer
+    , brokowski = new Brokowski({
+        port: 6000,     // default: 3000
+        subscribers: [{
+          event: 'my-event',
+          method: 'GET',
+          hostname: '192.168.0.100',
+          port: 6002,
+          path: 'my-service'
+        }]
+      }).start();
 
   // starts a cluster of brokers at http://192.168.0.1:6000 (one server on each CPU core)
-  var brokowski = require('brokowski').brokowskiCluster({port: 6000}).start();
+  var Brokowski = require('brokowski').BrokowskiCluster
+    , brokowski = new Brokowski({port: 6000}).start();
   ```
 
   subscriber:
   ```js
   // starts subscriber at http://localhost:6002/mysubscriber
-  var sub = require('brokowski').sub({
-    port: 6002                        // optional, default: 3000
-    name: 'mysubscriber',             // mandatory
-    broker: 'http://192.168.0.1:6000' // mandatory
-  }).start();
+  var Sub = require('brokowski').Sub
+    , sub = new Sub({
+        port: 6002                        // optional, default: 3000
+        name: 'mysubscriber',             // mandatory
+        broker: 'http://192.168.0.1:6000' // mandatory
+      }).start();
 
   sub
     .get('my-event', function(data) { // resubscribing
@@ -82,7 +87,9 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
   publisher:
   ```js
-  var pub = require('brokowski').pub({broker: 'http://192.168.0.1:6000'});
+  var Pub = require('brokowski').Pub
+    , pub = new Pub({broker: 'http://192.168.0.1:6000'});
+
   pub.send('my-event', {coolstuff: true});
   ```
 
