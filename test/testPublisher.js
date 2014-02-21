@@ -4,13 +4,14 @@ var assert = require('assert')
   , jsonBody = require('body/json')
   , connect = require('connect')
   , broker
+  , Pub = require('../lib/publisher.js')
   , publisher;
 
 describe('Publisher', function() {
 
   it('should fail when no broker provided', function(done) {
     try {
-      publisher = require('../lib/publisher.js').pub();
+      publisher = new Pub();
     } catch(e) {
       done();
     }
@@ -31,7 +32,7 @@ describe('Publisher', function() {
 
     http.createServer(broker).listen(4001);
 
-    publisher = require('../lib/publisher.js').pub({broker: 'http://127.0.0.1:4001'});
+    publisher = new Pub({broker: 'http://127.0.0.1:4001'});
 
     publisher.send('myevent', {testdata: true});
   });
@@ -46,7 +47,7 @@ describe('Publisher', function() {
 
     http.createServer(broker).listen(4002);
 
-    publisher = require('../lib/publisher.js').pub({broker: 'http://127.0.0.1:4002/'});
+    publisher = new Pub({broker: 'http://127.0.0.1:4002/'});
 
     publisher.send('myevent', {testdata: true});
   });

@@ -3,13 +3,14 @@ var assert = require('assert')
   , http = require('http')
   , jsonBody = require('body/json')
   , connect = require('connect')
-  , request = require('request');
+  , request = require('request')
+  , Sub = require('../lib/subscriber.js');
 
 describe('[testSubscriber.js] Subscriber', function() {
 
   it('should fail when no name provided', function(done) {
     try {
-      var subscriber = require('../lib/subscriber.js').sub({
+      var subscriber = new Sub({
         port: 6000,
         broker: 'http://127.0.0.1:5999'
       })
@@ -20,7 +21,7 @@ describe('[testSubscriber.js] Subscriber', function() {
 
   it('should fail when no name provided', function(done) {
     try {
-      var subscriber = require('../lib/subscriber.js').sub({
+      var subscriber = new Sub({
         port: 6000,
         name: 'myservice'
       })
@@ -37,7 +38,7 @@ describe('[testSubscriber.js] Subscriber', function() {
 
     http.createServer(broker).listen(5999);
 
-    var subscriber = require('../lib/subscriber.js').sub({
+    var subscriber = new Sub({
       port: 6000,
       name: 'myservice',
       broker: 'http://127.0.0.1:5999'
@@ -60,7 +61,7 @@ describe('[testSubscriber.js] Subscriber', function() {
 
     http.createServer(broker).listen(6001);
 
-    var subscriber = require('../lib/subscriber.js').sub({
+    var subscriber = new Sub({
       port: 6002,
       name: 'myservice',
       broker: 'http://127.0.0.1:6001'
@@ -80,7 +81,7 @@ describe('[testSubscriber.js] Subscriber', function() {
 
     http.createServer(broker).listen(6003);
 
-    var subscriber = require('../lib/subscriber.js').sub({
+    var subscriber = new Sub({
       port: 6004,
       name: 'myservice',
       broker: 'http://127.0.0.1:6003'
@@ -100,7 +101,7 @@ describe('[testSubscriber.js] Subscriber', function() {
 
     http.createServer(broker).listen(6005);
 
-    var subscriber = require('../lib/subscriber.js').sub({
+    var subscriber = new Sub({
       port: 6006,
       name: 'myservice',
       broker: 'http://127.0.0.1:6005'
@@ -120,7 +121,7 @@ describe('[testSubscriber.js] Subscriber', function() {
 
     http.createServer(broker).listen(6007);
 
-    var subscriber = require('../lib/subscriber.js').sub({
+    var subscriber = new Sub({
       port: 6008,
       name: 'myservice',
       broker: 'http://127.0.0.1:6007'
@@ -133,7 +134,7 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {});
     http.createServer(broker).listen(6009);
 
-    var subscriber = require('../lib/subscriber.js').sub({
+    var subscriber = new Sub({
       port: 6010,
       name: 'myservice',
       broker: 'http://127.0.0.1:6009'
@@ -152,7 +153,7 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {});
     http.createServer(broker).listen(6011);
 
-    var subscriber = require('../lib/subscriber.js').sub({
+    var subscriber = new Sub({
       port: 6012,
       name: 'myservice',
       broker: 'http://127.0.0.1:6011'
@@ -171,7 +172,7 @@ describe('[testSubscriber.js] Subscriber', function() {
     var broker = connect().use(function(req, res) {});
     http.createServer(broker).listen(6013);
 
-    var subscriber = require('../lib/subscriber.js').sub({
+    var subscriber = new Sub({
       port: 6014,
       name: 'myservice',
       broker: 'http://127.0.0.1:6013'
@@ -189,7 +190,7 @@ describe('[testSubscriber.js] Subscriber', function() {
   it('should handle DELETE event and response 200', function(done) {
     http.createServer(connect().use(function(req, res) {})).listen(6015);
 
-    var subscriber = require('../lib/subscriber.js').sub({
+    var subscriber = new Sub({
       port: 6016,
       name: 'myservice',
       broker: 'http://127.0.0.1:6015'
@@ -216,7 +217,7 @@ describe('[testSubscriber.js] Subscriber', function() {
 
     http.createServer(broker).listen(6017);
 
-    var subscriber = require('../lib/subscriber.js').sub({
+    var subscriber = new Sub({
       port: 6018,
       name: 'myservice',
       broker: 'http://127.0.0.1:6017'

@@ -2,7 +2,8 @@ var assert = require('assert')
   , should = require('should')
   , _ = require('lodash')
   , http = require('http')
-  , broker = require('../lib/broker.js')();
+  , Broker = require('../lib/broker.js')
+  , broker = new Broker();
 
 function HttpMock(onEnd) {
   this.onEnd = onEnd;
