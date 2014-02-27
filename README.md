@@ -1,7 +1,9 @@
 brokowski [![Build Status](https://secure.travis-ci.org/Horsed/brokowski.png)](http://travis-ci.org/Horsed/brokowski) [![experimental](http://hughsk.github.io/stability-badges/dist/experimental.svg)](http://github.com/hughsk/stability-badges)
 ===========
+
+**[Known issues](https://github.com/Horsed/brokowski/issues?labels=bug&state=open)**
  
-RESTful publish/subscribe broker (and publisher and subscriber)
+RESTful publish/subscribe toolkit including broker, publisher and subscriber.
 
 Brokowski has a RESTful pub/sub broker, which runs as a HTTP server. It receives subscriptions and events via a RESTful API. The events will be forwarded to the connected subscriber services.
 Brokowski also includes publisher and subcriber modules, which offer simple APIs for RESTful event handling. They take care of setting up HTTP servers, connecting to the broker and sending/receiving events via the broker's RESTful API, making it easy to include pub/sub event handling into your apps. And since the broker runs on HTTP you can connect your own services via HTTP, too.
@@ -10,35 +12,44 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
   Node.js ~0.10 is required
 
-    $ npm install brokowski -g
+    $ npm install -g brokowski
     $ brokowski server 6000
     $ brokowski cluster 6000
 
 ## API
 
-  broker:
+  broker server:
   ```js
-  // starts one broker at http://192.168.0.1:6000
+  // start a broker server at http://192.168.0.1:6000
+
   var Brokowski = require('brokowski').BrokowskiServer
     , brokowski = new Brokowski({
-        port: 6000,     // default: 3000
-        subscribers: [{
-          event: 'my-event',
-          method: 'GET',
-          hostname: '192.168.0.100',
-          port: 6002,
-          path: 'my-service'
-        }]
+        port: 6000    // default: 3000
       }).start();
 
-  // starts a cluster of brokers at http://192.168.0.1:6000 (one server on each CPU core)
+  // start a cluster of brokers at http://192.168.0.1:6000 (one server on each CPU core)
+
   var Brokowski = require('brokowski').BrokowskiCluster
     , brokowski = new Brokowski({port: 6000}).start();
+
+  // start the broker with default subscribers
+
+  new Brokowski({
+    port: 6000,
+    subscribers: [{
+      event: 'my-event',
+      method: 'GET',
+      hostname: '192.168.0.100',
+      port: 6002,
+      path: 'my-service'
+    }]
+  }).start();
   ```
 
-  subscriber:
+  subscriber server:
   ```js
-  // starts subscriber at http://localhost:6002/mysubscriber
+  // start a subscriber at http://localhost:6002/mysubscriber
+
   var Sub = require('brokowski').Sub
     , sub = new Sub({
         port: 6002                        // optional, default: 3000
@@ -184,10 +195,7 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
   You can test the performance yourself:
 
-    $ cd node_modules/brokowski
-    
-    # start broker at http://localhost:3000
-    $ node startBroker.js
+    $ brokowski server 6000
 
     $ cd perf
 
@@ -196,22 +204,5 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
     
     # start publishing 10000 events with a msg size of 4096 byte
     $ node startPublisher.js http://localhost:3000 my-event 4096 10000 
-
-## Known errors
-
-  * Brokowski does remove broken subscribers, but in the current version (0.1.2) it doesn't do this reliably under big load (like the performance tests). That's because incoming http requests can block the handling of errors based on broken subscribers.
-
-## TODO
-
-  * tests for brokowskiServer
-  * automatic subscriptions clean up
-  * intelligent subscribers (like auto connecting zeromq sockets)
-  * parallelizing
-  * broker config options
-  * HTTPS
-  * message qeueing?
-  * broker as connect middleware?
-  * subscriber priority?
-  * instructions for use with forever
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/Horsed/brokowski/trend.png)](https://bitdeli.com/free "Bitdeli Badge")

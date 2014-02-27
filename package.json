@@ -1,15 +1,15 @@
 {
   "name": "brokowski",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "author": "Horsed",
-  "description": "RESTful publish/subscribe toolkit including a broker",
+  "description": "RESTful publish/subscribe toolkit including broker, publisher and subscriber",
   "private": false,
   "main": "index.js",
   "bin": {
     "brokowski": "bin/brokowski"
   },
   "scripts": {
-    "start": "node startBroker",
+    "start": "node bin/brokowski",
     "test": "mocha"
   },
   "license": "MIT",
