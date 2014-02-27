@@ -10,7 +10,7 @@ Brokowski also includes publisher and subcriber modules, which offer simple APIs
 
   Node.js ~0.10 is required
 
-    $ npm install brokowski
+    $ npm install brokowski -g
     $ brokowski server 6000
     $ brokowski cluster 6000
 
