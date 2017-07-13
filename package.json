@@ -13,9 +13,6 @@
     "test": "mocha"
   },
   "license": "MIT",
-  "engines": {
-    "node": ">=0.10"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Horsed/brokowski.git"
